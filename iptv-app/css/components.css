@@ -1,0 +1,450 @@
+/* Buttons */
+
+.btn-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    color: white;
+    transition: all var(--transition-fast);
+    backdrop-filter: blur(10px);
+}
+
+.btn-control:hover,
+.btn-control:focus {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+}
+
+.btn-control:active {
+    transform: scale(0.95);
+}
+
+.btn-control-large {
+    width: 72px;
+    height: 72px;
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-md);
+    color: white;
+    transition: all var(--transition-fast);
+}
+
+.btn-icon:hover,
+.btn-icon:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: var(--border-radius-md);
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    min-height: 48px;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    background-color: var(--color-primary-active);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background-color: var(--color-surface-elevated);
+    color: var(--color-text-primary);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border);
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    min-height: 48px;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+    background-color: var(--color-border);
+    border-color: #444;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-large {
+    min-height: 56px;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-lg);
+}
+
+/* Channel List */
+.channel-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.channel-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--color-surface-elevated);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 2px solid transparent;
+}
+
+.channel-item:hover,
+.channel-item:focus {
+    background-color: var(--color-border);
+}
+
+.channel-item.active {
+    border-color: var(--color-primary);
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.channel-item-number {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    min-width: 32px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.channel-item-name {
+    flex: 1;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--spacing-2xl);
+    min-height: 300px;
+}
+
+.empty-state svg {
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-lg);
+}
+
+.empty-state h3 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.empty-state p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Settings Sections */
+.settings-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.settings-section:last-child {
+    margin-bottom: 0;
+}
+
+.settings-section h4 {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.settings-section .btn-secondary,
+.settings-section .btn-primary {
+    margin-bottom: var(--spacing-sm);
+}
+
+.settings-section .btn-secondary:last-child,
+.settings-section .btn-primary:last-child {
+    margin-bottom: 0;
+}
+
+/* Playlist List */
+.playlist-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.playlist-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    background-color: var(--color-surface-elevated);
+    border-radius: var(--border-radius-md);
+    border: 2px solid transparent;
+}
+
+.playlist-item.active {
+    border-color: var(--color-primary);
+}
+
+.playlist-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.playlist-item-name {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: var(--spacing-xs);
+}
+
+.playlist-item-count {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.playlist-item-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* TV Remote Focus States */
+@media (hover: none) {
+    button:focus,
+    .channel-item:focus,
+    .playlist-item:focus {
+        outline: 3px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+}
+
+/* Mobile Touch Optimizations */
+@media (max-width: 768px) {
+    .btn-control {
+        width: 64px;
+        height: 64px;
+    }
+    
+    .btn-control-large {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .channel-item,
+    .playlist-item {
+        padding: var(--spacing-lg);
+        min-height: 56px;
+    }
+}
+
+/* TV Large Screen Optimizations */
+@media (min-width: 1280px) {
+    .btn-control {
+        width: 72px;
+        height: 72px;
+    }
+    
+    .btn-control-large {
+        width: 96px;
+        height: 96px;
+    }
+    
+    .channel-item,
+    .playlist-item {
+        padding: var(--spacing-lg);
+        min-height: 64px;
+        font-size: var(--font-size-lg);
+    }
+}
+
+/* Modal System */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.modal-overlay.visible {
+    display: flex;
+}
+
+.modal {
+    display: none;
+}
+
+.modal.visible {
+    display: block;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content {
+    background: var(--color-surface);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-2xl);
+    max-width: 500px;
+    width: 90%;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-border);
+}
+
+.modal-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 50%;
+    color: var(--color-primary);
+}
+
+.modal-icon.warning {
+    background: rgba(251, 191, 36, 0.1);
+    color: #fbbf24;
+}
+
+.modal-icon.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.modal-icon.success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.modal-content h3 {
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.modal-content p {
+    text-align: center;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xl);
+}
+
+.modal-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.modal-actions button {
+    flex: 1;
+}
+
+/* Input Field */
+.input-field {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: var(--color-surface-elevated);
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    transition: border-color var(--transition-fast);
+    margin-bottom: var(--spacing-md);
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.input-field::placeholder {
+    color: var(--color-text-muted);
+}
+
+/* Better video overlay hide/show */
+.video-overlay {
+    pointer-events: none;
+}
+
+.video-overlay.visible {
+    pointer-events: auto;
+}
+
+.video-overlay button {
+    pointer-events: auto;
+}
+
+/* Ensure controls are clickable when visible */
+.video-overlay.visible * {
+    pointer-events: auto;
+}
+/* Hide video overlay controls completely */
+#videoOverlay {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: none !important;
+}
+
+/* Keep channel info visible at top (optional) */
+#channelInfo {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Ensure video is visible */
+#videoPlayer {
+    opacity: 1 !important;
+    visibility: visible !important;
+}

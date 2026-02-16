@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>IPTV Player</title>
+    
+    <!-- HLS.js for better stream support -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    
+    <!-- Main Container -->
+    <div id="app" class="app">
+        
+        <!-- Video Player Section -->
+        <div id="videoContainer" class="video-container">
+            <video id="videoPlayer" class="video-player" playsinline webkit-playsinline>
+                Your browser does not support video playback.
+            </video>
+            
+            <!-- Video Overlay Controls -->
+            <div id="videoOverlay" class="video-overlay">
+                
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <div class="channel-info">
+                        <h2 id="channelName" class="channel-name">No Channel Selected</h2>
+                        <p id="channelNumber" class="channel-number"></p>
+                    </div>
+                    <button id="btnSettings" class="btn-icon" aria-label="Settings">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 1v6m0 6v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Center Controls -->
+                <div class="center-controls">
+                    <button id="btnPrevChannel" class="btn-control" aria-label="Previous Channel">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                        </svg>
+                    </button>
+                    
+                    <button id="btnPlayPause" class="btn-control btn-control-large" aria-label="Play/Pause">
+                        <svg id="iconPlay" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                        <svg id="iconPause" width="48" height="48" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                            <path d="M6 4h4v16H6zm8 0h4v16h-4z"/>
+                        </svg>
+                    </button>
+                    
+                    <button id="btnNextChannel" class="btn-control" aria-label="Next Channel">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 18h2V6h-2zm-11-7l8.5-6v12z"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Bottom Bar -->
+                <div class="bottom-bar">
+                    <button id="btnChannelList" class="btn-primary" aria-label="Channel List">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <line x1="3" y1="18" x2="21" y2="18"/>
+                        </svg>
+                        <span>Channels</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                <div class="spinner"></div>
+                <p>Loading...</p>
+            </div>
+        </div>
+        
+        <!-- Channel Sidebar -->
+        <aside id="channelSidebar" class="sidebar sidebar-left">
+            <div class="sidebar-header">
+                <h3>Channels</h3>
+                <button id="btnCloseSidebar" class="btn-icon" aria-label="Close">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- Empty State -->
+                <div id="emptyChannelState" class="empty-state">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="2" y="7" width="20" height="15" rx="2"/>
+                        <polyline points="17 2 12 7 7 2"/>
+                    </svg>
+                    <h3>No Channels Loaded</h3>
+                    <p>Add a playlist to get started</p>
+                    <button id="btnAddPlaylistFromSidebar" class="btn-primary">Add Playlist</button>
+                </div>
+                
+                <!-- Channel List -->
+                <ul id="channelList" class="channel-list" style="display: none;">
+                    <!-- Channels will be populated here -->
+                </ul>
+            </div>
+        </aside>
+        
+        <!-- Settings Sidebar -->
+        <aside id="settingsSidebar" class="sidebar sidebar-right">
+            <div class="sidebar-header">
+                <h3>Settings</h3>
+                <button id="btnCloseSettings" class="btn-icon" aria-label="Close">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="settings-section">
+                    <h4>Playlist Management</h4>
+                    
+                    <button id="btnAddPlaylistURL" class="btn-secondary btn-full">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        <span>Add Playlist URL</span>
+                    </button>
+                    
+                    <button id="btnUploadPlaylist" class="btn-secondary btn-full">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <span>Upload M3U File</span>
+                    </button>
+                    
+                    <!-- Hidden file input -->
+                    <input type="file" id="fileInput" accept=".m3u,.m3u8" style="display: none;">
+                </div>
+                
+                <div class="settings-section">
+                    <h4>Saved Playlists</h4>
+                    <div id="playlistList" class="playlist-list">
+                        <p class="text-muted">No playlists saved yet</p>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4>About</h4>
+                    <p class="text-muted small">IPTV Player v1.0</p>
+                    <p class="text-muted small">All phases complete</p>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Overlay Background (for sidebars) -->
+        <div id="overlay" class="overlay"></div>
+        
+        <!-- First Time Welcome Screen -->
+        <div id="welcomeScreen" class="welcome-screen" style="display: none;">
+            <div class="welcome-content">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <h1>Welcome to IPTV Player</h1>
+                <p>Get started by adding your first playlist</p>
+                
+                <div class="welcome-actions">
+                    <button id="btnWelcomeAddURL" class="btn-primary btn-large">
+                        <span>Add Playlist URL</span>
+                    </button>
+                    <button id="btnWelcomeUpload" class="btn-secondary btn-large">
+                        <span>Upload M3U File</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Custom Modal Dialogs -->
+        <div id="modalOverlay" class="modal-overlay">
+            <!-- Alert Modal -->
+            <div id="alertModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-icon" id="alertIcon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    <h3 id="alertTitle">Alert</h3>
+                    <p id="alertMessage">Message here</p>
+                    <button id="alertOkBtn" class="btn-primary btn-full">OK</button>
+                </div>
+            </div>
+            
+            <!-- Confirm Modal -->
+            <div id="confirmModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-icon warning">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
+                    <h3 id="confirmTitle">Confirm</h3>
+                    <p id="confirmMessage">Are you sure?</p>
+                    <div class="modal-actions">
+                        <button id="confirmCancelBtn" class="btn-secondary btn-full">Cancel</button>
+                        <button id="confirmOkBtn" class="btn-primary btn-full">Confirm</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Prompt Modal -->
+            <div id="promptModal" class="modal">
+                <div class="modal-content">
+                    <h3 id="promptTitle">Enter URL</h3>
+                    <p id="promptMessage">Please enter playlist URL:</p>
+                    <input type="text" id="promptInput" class="input-field" placeholder="https://example.com/playlist.m3u">
+                    <p class="text-muted small" style="margin-top: 8px;">Example: https://live-tv-hub.pages.dev/all.m3u</p>
+                    <div class="modal-actions">
+                        <button id="promptCancelBtn" class="btn-secondary btn-full">Cancel</button>
+                        <button id="promptOkBtn" class="btn-primary btn-full">Add Playlist</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+        
+    </div>
+    
+    <!-- JavaScript Files -->
+<script src="js/modal.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/playlist-parser.js"></script>
+    <script src="js/playlist-manager.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+    
+</body>
+</html>

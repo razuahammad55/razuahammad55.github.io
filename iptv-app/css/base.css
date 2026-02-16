@@ -1,0 +1,135 @@
+/* CSS Reset and Base Styles */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    background-color: var(--color-background);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Performance optimizations */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+video {
+    will-change: transform;
+}
+
+.sidebar {
+    will-change: transform;
+}
+
+/* Remove default button styles */
+button {
+    font-family: inherit;
+    font-size: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    color: inherit;
+}
+
+button:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Remove default list styles */
+ul, ol {
+    list-style: none;
+}
+
+/* Improve media defaults */
+img, video {
+    display: block;
+    max-width: 100%;
+}
+
+/* Text utilities */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+h1 { font-size: var(--font-size-3xl); }
+h2 { font-size: var(--font-size-2xl); }
+h3 { font-size: var(--font-size-xl); }
+h4 { font-size: var(--font-size-lg); }
+
+p {
+    margin-bottom: var(--spacing-md);
+}
+
+.text-muted {
+    color: var(--color-text-muted);
+}
+
+.small {
+    font-size: var(--font-size-sm);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--border-radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #444444;
+}
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Optimize for low-end devices */
+@media (max-width: 768px) {
+    * {
+        -webkit-font-smoothing: subpixel-antialiased;
+    }
+}
