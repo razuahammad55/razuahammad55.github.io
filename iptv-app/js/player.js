@@ -1,6 +1,6 @@
 /**
- * Universal Video Player
- * Works with HTTP and HTTPS (Service Worker handles proxy)
+ * Universal Video Player with Custom Proxy Loader
+ * Handles HTTP streams on HTTPS pages
  */
 
 class VideoPlayer {
@@ -13,7 +13,7 @@ class VideoPlayer {
         
         this.disableLoadingIndicators();
         this.setupVideoEvents();
-        console.log('✓ Universal Player initialized');
+        console.log('✓ Universal Player with Proxy Loader');
     }
     
     disableLoadingIndicators() {
@@ -24,7 +24,12 @@ class VideoPlayer {
         }
     }
     
-    getUltraFastHLSConfig() {
+    /**
+     * Custom HLS config with proxy loader
+     */
+    getHLSConfigWithProxy(originalUrl) {
+        const needsProxy = window.location.protocol === 'https:' && originalUrl.startsWith('http://');
+        
         return {
             maxBufferLength: 3,
             maxMaxBufferLength: 5,
@@ -32,7 +37,6 @@ class VideoPlayer {
             maxBufferHole: 0.1,
             liveSyncDurationCount: 1,
             liveMaxLatencyDurationCount: 3,
-            liveDurationInfinity: false,
             enableWorker: true,
             lowLatencyMode: true,
             backBufferLength: 0,
@@ -49,14 +53,47 @@ class VideoPlayer {
             fragLoadingRetryDelay: 1000,
             manifestLoadingRetryDelay: 1000,
             levelLoadingRetryDelay: 1000,
-            nudgeMaxRetry: 1,
-            maxFragLookUpTolerance: 0.1,
-            highBufferWatchdogPeriod: 1,
             debug: false,
+            
+            // Custom loader with proxy support
+            loader: needsProxy ? this.createProxyLoader() : Hls.DefaultConfig.loader,
+            
             xhrSetup: (xhr, url) => {
                 xhr.withCredentials = false;
             }
         };
+    }
+    
+    /**
+     * Create custom loader that proxies HTTP requests
+     */
+    createProxyLoader() {
+        const proxies = [
+            'https://corsproxy.io/?',
+            'https://api.allorigins.win/raw?url=',
+        ];
+        let proxyIndex = 0;
+        
+        class ProxyLoader extends Hls.DefaultConfig.loader {
+            constructor(config) {
+                super(config);
+                this.proxyIndex = proxyIndex;
+            }
+            
+            load(context, config, callbacks) {
+                // Only proxy HTTP URLs
+                if (context.url.startsWith('http://')) {
+                    const proxy = proxies[this.proxyIndex];
+                    const proxiedUrl = proxy + encodeURIComponent(context.url);
+                    console.log('🔀 Proxying:', context.url);
+                    context.url = proxiedUrl;
+                }
+                
+                super.load(context, config, callbacks);
+            }
+        }
+        
+        return ProxyLoader;
     }
     
     playChannel(channel) {
@@ -73,9 +110,6 @@ class VideoPlayer {
         this.cleanup();
         
         const url = channel.url.trim();
-        
-        // Service Worker will handle HTTP->HTTPS proxy automatically
-        // Just play the stream normally
         
         if (url.includes('.m3u8') || url.includes('m3u8')) {
             this.playHLS(url);
@@ -94,7 +128,10 @@ class VideoPlayer {
         if (Hls.isSupported()) {
             console.log('📡 HLS stream:', url);
             
-            this.hls = new Hls(this.getUltraFastHLSConfig());
+            // Use config with proxy loader
+            const config = this.getHLSConfigWithProxy(url);
+            this.hls = new Hls(config);
+            
             this.hls.loadSource(url);
             this.hls.attachMedia(this.video);
             
@@ -105,7 +142,7 @@ class VideoPlayer {
             
             this.hls.on(Hls.Events.ERROR, (event, data) => {
                 if (data.fatal) {
-                    console.warn('HLS error:', data.type, data.details);
+                    console.warn('❌ HLS error:', data.type, data.details);
                     
                     if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
                         if (this.retryCount < this.maxRetries) {
@@ -113,6 +150,7 @@ class VideoPlayer {
                             console.log(`🔄 Retry ${this.retryCount}/${this.maxRetries}`);
                             setTimeout(() => this.hls.startLoad(), 1000);
                         } else {
+                            console.log('❌ Max retries reached, skipping...');
                             this.skipToNext();
                         }
                     } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
@@ -125,7 +163,7 @@ class VideoPlayer {
             });
             
         } else if (this.video.canPlayType('application/vnd.apple.mpegurl')) {
-            console.log('📡 Native HLS');
+            console.log('📡 Native HLS (Safari)');
             this.video.src = url;
             this.video.play().catch(e => console.log('Autoplay blocked'));
         } else {
@@ -135,10 +173,12 @@ class VideoPlayer {
     }
     
     playHTTP(url) {
-        console.log('📡 HTTP stream');
+        console.log('📡 HTTP stream, trying as HLS');
         
         if (Hls.isSupported()) {
-            this.hls = new Hls(this.getUltraFastHLSConfig());
+            const config = this.getHLSConfigWithProxy(url);
+            this.hls = new Hls(config);
+            
             this.hls.loadSource(url);
             this.hls.attachMedia(this.video);
             
