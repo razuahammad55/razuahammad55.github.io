@@ -261,20 +261,14 @@ class UIManager {
             this.playlistList.appendChild(div);
         });
     }
-    
-    // Loading States
-    
+
     showLoading(message = 'Loading...') {
-        this.loadingIndicator.style.display = 'block';
-        const loadingText = this.loadingIndicator.querySelector('p');
-        if (loadingText) {
-            loadingText.textContent = message;
-        }
-    }
-    
-    hideLoading() {
-        this.loadingIndicator.style.display = 'none';
-    }
+    // Do nothing - loading disabled
+}
+
+hideLoading() {
+    // Do nothing - loading disabled
+}
     
     // Welcome Screen
     
@@ -293,4 +287,5 @@ class UIManager {
         div.textContent = text;
         return div.innerHTML;
     }
+
 }
