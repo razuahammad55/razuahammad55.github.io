@@ -1,71 +1,52 @@
 /**
- * Service Worker for Caching Playlists
+ * Service Worker with HTTP to HTTPS Proxy
+ * Automatically handles HTTP streams on HTTPS pages
  */
 
-const CACHE_NAME = 'iptv-player-v1';
-const ASSETS_TO_CACHE = [
-    '/',
-    '/index.html',
-    '/css/style.css',
-    '/css/components.css',
-    '/js/app.js',
-    '/js/player.js',
-    '/js/playlist-parser.js',
-    '/js/playlist-manager.js',
-    '/js/storage-manager.js',
-    '/js/ui.js',
-    '/js/modal.js'
-];
+const CACHE_NAME = 'iptv-player-v2';
+const CORS_PROXY = 'https://corsproxy.io/?';
 
+// Install
 self.addEventListener('install', (event) => {
-    console.log('Service Worker: Installing...');
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => cache.addAll(ASSETS_TO_CACHE))
-            .catch(err => console.log('Cache error:', err))
-    );
+    console.log('SW: Installing...');
     self.skipWaiting();
 });
 
+// Activate
 self.addEventListener('activate', (event) => {
-    console.log('Service Worker: Activating...');
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cache) => {
-                    if (cache !== CACHE_NAME) {
-                        return caches.delete(cache);
-                    }
-                })
-            );
-        })
-    );
-    return self.clients.claim();
+    console.log('SW: Activating...');
+    event.waitUntil(self.clients.claim());
 });
 
+// Fetch - proxy HTTP requests
 self.addEventListener('fetch', (event) => {
-    if (event.request.method !== 'GET') return;
+    const url = event.request.url;
     
-    if (event.request.url.includes('.m3u8') || 
-        event.request.url.includes('.ts') ||
-        event.request.url.includes('stream')) {
-        return;
-    }
-    
-    event.respondWith(
-        caches.match(event.request)
-            .then((response) => {
-                return response || fetch(event.request)
-                    .then((fetchResponse) => {
-                        if (fetchResponse && fetchResponse.status === 200) {
-                            const responseClone = fetchResponse.clone();
-                            caches.open(CACHE_NAME)
-                                .then((cache) => {
-                                    cache.put(event.request, responseClone);
-                                });
-                        }
-                        return fetchResponse;
-                    });
+    // Check if it's an HTTP stream request on HTTPS page
+    if (self.location.protocol === 'https:' && url.startsWith('http://')) {
+        console.log('SW: Proxying HTTP request:', url);
+        
+        event.respondWith(
+            fetch(CORS_PROXY + encodeURIComponent(url), {
+                method: event.request.method,
+                headers: event.request.headers,
+                mode: 'cors',
+                credentials: 'omit',
+                cache: 'no-store'
             })
-    );
+            .then(response => {
+                console.log('SW: Proxied successfully');
+                return response;
+            })
+            .catch(error => {
+                console.error('SW: Proxy failed:', error);
+                // Try without proxy as fallback
+                return fetch(event.request);
+            })
+        );
+    }
+    // Otherwise, normal fetch
+    else {
+        event.respondWith(fetch(event.request));
+    }
 });
