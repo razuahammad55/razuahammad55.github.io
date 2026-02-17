@@ -1,7 +1,6 @@
 /**
  * Universal Video Player
- * Supports: HLS, DASH, MP4, WebM, RTMP, HTTP streams
- * ZERO buffering delays, instant switching
+ * Supports ALL formats with HTTP/HTTPS proxy
  */
 
 class VideoPlayer {
@@ -12,77 +11,104 @@ class VideoPlayer {
         this.retryCount = 0;
         this.maxRetries = 2;
         
-        // Disable ALL loading indicators
-        this.disableLoadingIndicators();
+        // CORS Proxy for HTTP streams
+        this.corsProxies = [
+            'https://corsproxy.io/?',
+            'https://api.allorigins.win/raw?url=',
+            'https://cors.eu.org/',
+        ];
+        this.currentProxyIndex = 0;
         
+        this.disableLoadingIndicators();
         this.setupVideoEvents();
-        console.log('✓ Universal Player initialized');
+        console.log('✓ Universal Player with HTTP Proxy support');
     }
     
     /**
-     * Disable all loading indicators permanently
+     * Check if we need proxy (HTTP stream on HTTPS page)
+     */
+    needsProxy(url) {
+        const pageIsHTTPS = window.location.protocol === 'https:';
+        const urlIsHTTP = url.startsWith('http://');
+        return pageIsHTTPS && urlIsHTTP;
+    }
+    
+    /**
+     * Apply proxy to URL
+     */
+    applyProxy(url) {
+        const proxy = this.corsProxies[this.currentProxyIndex];
+        console.log(`🔀 Using proxy ${this.currentProxyIndex + 1}:`, proxy);
+        return proxy + encodeURIComponent(url);
+    }
+    
+    /**
+     * Try next proxy
+     */
+    tryNextProxy(originalUrl) {
+        this.currentProxyIndex++;
+        if (this.currentProxyIndex < this.corsProxies.length) {
+            console.log('🔄 Trying next proxy...');
+            this.playChannel(this.currentChannel);
+        } else {
+            console.error('❌ All proxies failed');
+            this.currentProxyIndex = 0;
+            this.skipToNext();
+        }
+    }
+    
+    /**
+     * Disable loading indicators
      */
     disableLoadingIndicators() {
         const loading = document.getElementById('loadingIndicator');
         if (loading) {
-            loading.style.display = 'none !important';
-            loading.remove(); // Remove it completely
+            loading.style.display = 'none';
+            loading.remove();
         }
-        console.log('🚫 Loading indicators disabled');
     }
     
     /**
-     * Ultra-fast HLS configuration
+     * Ultra-fast HLS config
      */
     getUltraFastHLSConfig() {
         return {
-            // Minimal buffering
-            maxBufferLength: 3,               // Only 3 seconds buffer
-            maxMaxBufferLength: 5,            // Max 5 seconds
-            maxBufferSize: 10 * 1000 * 1000,  // 10 MB only
-            maxBufferHole: 0.1,               // Jump tiny gaps
-            
-            // Ultra-low latency
-            liveSyncDurationCount: 1,         // Minimum sync
+            maxBufferLength: 3,
+            maxMaxBufferLength: 5,
+            maxBufferSize: 10 * 1000 * 1000,
+            maxBufferHole: 0.1,
+            liveSyncDurationCount: 1,
             liveMaxLatencyDurationCount: 3,
             liveDurationInfinity: false,
-            
-            // Instant start
             enableWorker: true,
             lowLatencyMode: true,
-            backBufferLength: 0,              // No back buffer
-            
-            // Quality
-            startLevel: -1,                   // Auto
+            backBufferLength: 0,
+            startLevel: -1,
             autoStartLoad: true,
-            testBandwidth: false,             // Skip bandwidth test
-            abrEwmaDefaultEstimate: 10000000, // Assume 10 Mbps
-            
-            // Aggressive timeouts
-            fragLoadingTimeOut: 10000,        // 10s
-            manifestLoadingTimeOut: 5000,     // 5s
+            testBandwidth: false,
+            abrEwmaDefaultEstimate: 10000000,
+            fragLoadingTimeOut: 10000,
+            manifestLoadingTimeOut: 5000,
             levelLoadingTimeOut: 5000,
-            
-            // Minimal retries
             fragLoadingMaxRetry: 2,
             manifestLoadingMaxRetry: 2,
             levelLoadingMaxRetry: 2,
             fragLoadingRetryDelay: 500,
             manifestLoadingRetryDelay: 500,
             levelLoadingRetryDelay: 500,
-            
-            // Performance
             nudgeMaxRetry: 1,
             maxFragLookUpTolerance: 0.1,
             highBufferWatchdogPeriod: 1,
-            
-            // Silent errors
-            debug: false
+            debug: false,
+            // CORS settings
+            xhrSetup: (xhr, url) => {
+                xhr.withCredentials = false;
+            }
         };
     }
     
     /**
-     * Play channel - INSTANT, NO LOADING SCREEN
+     * Play channel - INSTANT
      */
     playChannel(channel) {
         if (!channel || !channel.url) {
@@ -91,47 +117,38 @@ class VideoPlayer {
             return;
         }
         
-        console.log('⚡ Instant switch:', channel.name);
+        console.log('⚡ Playing:', channel.name);
         this.currentChannel = channel;
         this.retryCount = 0;
         
-        // Clean up immediately
         this.cleanup();
         
-        // Detect and play based on URL
-        const url = channel.url.trim();
+        let url = channel.url.trim();
         
-        // HLS streams (.m3u8)
+        // Apply proxy if needed
+        if (this.needsProxy(url)) {
+            console.log('🔒 HTTP stream on HTTPS page - applying proxy');
+            url = this.applyProxy(url);
+        }
+        
+        // Detect format and play
         if (url.includes('.m3u8') || url.includes('m3u8')) {
-            this.playHLS(url);
-        }
-        // DASH streams (.mpd)
-        else if (url.includes('.mpd')) {
+            this.playHLS(url, channel.url);
+        } else if (url.includes('.mpd')) {
             this.playDASH(url);
-        }
-        // RTMP streams
-        else if (url.startsWith('rtmp://') || url.startsWith('rtmps://')) {
+        } else if (url.startsWith('rtmp://') || url.startsWith('rtmps://')) {
             this.playRTMP(url);
-        }
-        // Direct video files
-        else if (url.includes('.mp4') || url.includes('.webm') || url.includes('.mkv')) {
+        } else if (url.includes('.mp4') || url.includes('.webm') || url.includes('.mkv')) {
             this.playDirect(url);
-        }
-        // HTTP/HTTPS streams (try as direct first, then HLS)
-        else if (url.startsWith('http://') || url.startsWith('https://')) {
-            this.playHTTP(url);
-        }
-        // Unknown - try direct
-        else {
-            console.log('🔍 Unknown format, trying direct stream');
-            this.playDirect(url);
+        } else {
+            this.playHTTP(url, channel.url);
         }
     }
     
     /**
      * Play HLS stream
      */
-    playHLS(url) {
+    playHLS(url, originalUrl) {
         if (Hls.isSupported()) {
             console.log('📡 HLS stream');
             
@@ -139,19 +156,21 @@ class VideoPlayer {
             this.hls.loadSource(url);
             this.hls.attachMedia(this.video);
             
-            // Start playing IMMEDIATELY on manifest parse
             this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                this.video.play().catch(e => console.log('Play blocked:', e));
+                console.log('✅ Manifest loaded');
+                this.currentProxyIndex = 0; // Reset proxy on success
+                this.video.play().catch(e => console.log('Autoplay blocked:', e));
             });
             
-            // Silent error handling
             this.hls.on(Hls.Events.ERROR, (event, data) => {
                 if (data.fatal) {
                     console.warn('HLS error:', data.details);
                     
                     if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-                        // Try once more
-                        if (this.retryCount < 1) {
+                        // If using proxy and failed, try next proxy
+                        if (this.needsProxy(originalUrl)) {
+                            this.tryNextProxy(originalUrl);
+                        } else if (this.retryCount < 1) {
                             this.retryCount++;
                             setTimeout(() => this.hls.startLoad(), 500);
                         } else {
@@ -166,12 +185,10 @@ class VideoPlayer {
             });
             
         } else if (this.video.canPlayType('application/vnd.apple.mpegurl')) {
-            // Safari native HLS
             console.log('📡 Native HLS');
             this.video.src = url;
-            this.video.play().catch(e => console.log('Play blocked:', e));
+            this.video.play().catch(e => console.log('Autoplay blocked:', e));
         } else {
-            console.warn('HLS not supported, trying direct');
             this.playDirect(url);
         }
     }
@@ -180,8 +197,7 @@ class VideoPlayer {
      * Play DASH stream
      */
     playDASH(url) {
-        console.log('📡 DASH stream (trying as direct)');
-        // Most browsers support DASH natively or via Media Source Extensions
+        console.log('📡 DASH stream');
         this.playDirect(url);
     }
     
@@ -189,20 +205,17 @@ class VideoPlayer {
      * Play RTMP stream
      */
     playRTMP(url) {
-        console.log('📡 RTMP stream (converting to HLS if available)');
-        // Try to play directly (some RTMP can be played via HLS conversion)
-        // Convert rtmp:// to http:// if server supports it
+        console.log('📡 RTMP stream');
         const httpUrl = url.replace('rtmp://', 'http://').replace('rtmps://', 'https://');
         this.playDirect(httpUrl);
     }
     
     /**
-     * Play HTTP stream (try multiple methods)
+     * Play HTTP stream
      */
-    playHTTP(url) {
+    playHTTP(url, originalUrl) {
         console.log('📡 HTTP stream');
         
-        // Try as HLS first (many HTTP streams are HLS without .m3u8 extension)
         if (Hls.isSupported()) {
             this.hls = new Hls(this.getUltraFastHLSConfig());
             this.hls.loadSource(url);
@@ -210,15 +223,18 @@ class VideoPlayer {
             
             this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 console.log('✓ Detected as HLS');
-                this.video.play().catch(e => console.log('Play blocked:', e));
+                this.currentProxyIndex = 0;
+                this.video.play().catch(e => console.log('Autoplay blocked:', e));
             });
             
             this.hls.on(Hls.Events.ERROR, (event, data) => {
-                if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-                    // Not HLS, try direct
-                    console.log('Not HLS, trying direct');
-                    this.cleanup();
-                    this.playDirect(url);
+                if (data.fatal) {
+                    if (this.needsProxy(originalUrl)) {
+                        this.tryNextProxy(originalUrl);
+                    } else {
+                        this.cleanup();
+                        this.playDirect(url);
+                    }
                 }
             });
         } else {
@@ -227,31 +243,25 @@ class VideoPlayer {
     }
     
     /**
-     * Play direct stream (fallback for all formats)
+     * Play direct stream
      */
     playDirect(url) {
         console.log('📡 Direct stream');
         
         this.video.src = url;
-        
-        // Try to play immediately
         this.video.play().catch(e => {
-            console.log('Autoplay blocked or error:', e);
-            // Try again after short delay
+            console.log('Play error:', e);
             setTimeout(() => {
-                this.video.play().catch(err => {
-                    console.warn('Cannot play:', err);
-                    this.skipToNext();
-                });
+                this.video.play().catch(() => this.skipToNext());
             }, 500);
         });
     }
     
     /**
-     * Skip to next channel on error
+     * Skip to next channel
      */
     skipToNext() {
-        console.log('⏭️ Auto-skipping...');
+        console.log('⏭️ Skipping...');
         setTimeout(() => {
             if (window.app) {
                 window.app.playNextChannel();
@@ -263,12 +273,10 @@ class VideoPlayer {
      * Cleanup
      */
     cleanup() {
-        // Stop current playback
         this.video.pause();
         this.video.removeAttribute('src');
         this.video.load();
         
-        // Destroy HLS
         if (this.hls) {
             this.hls.destroy();
             this.hls = null;
@@ -279,27 +287,23 @@ class VideoPlayer {
      * Setup video events
      */
     setupVideoEvents() {
-        // Playing - just log, no UI changes
         this.video.addEventListener('playing', () => {
             console.log('▶️ Playing');
         });
         
-        // Waiting - no action, no loading screen
         this.video.addEventListener('waiting', () => {
-            console.log('⏳ Buffering (silent)');
+            console.log('⏳ Buffering');
         });
         
-        // Can play - just log
         this.video.addEventListener('canplay', () => {
             console.log('✓ Ready');
         });
         
-        // Error - auto-skip
         this.video.addEventListener('error', (e) => {
-            console.error('Video error:', e);
+            console.error('Video error');
             if (this.retryCount < this.maxRetries) {
                 this.retryCount++;
-                console.log(`🔄 Retry ${this.retryCount}/${this.maxRetries}`);
+                console.log(`🔄 Retry ${this.retryCount}`);
                 setTimeout(() => {
                     if (this.currentChannel) {
                         this.playChannel(this.currentChannel);
@@ -310,16 +314,14 @@ class VideoPlayer {
             }
         });
         
-        // Stalled - try to recover
         this.video.addEventListener('stalled', () => {
-            console.warn('⚠️ Stalled, attempting recovery');
+            console.warn('⚠️ Stalled');
             this.video.load();
             this.video.play().catch(() => {});
         });
         
-        // Ended - play next
         this.video.addEventListener('ended', () => {
-            console.log('✓ Ended, next channel');
+            console.log('✓ Ended');
             this.skipToNext();
         });
     }
