@@ -447,4 +447,27 @@
 #videoPlayer {
     opacity: 1 !important;
     visibility: visible !important;
+
+}
+/* Remove ALL loading indicators */
+.loading-indicator,
+#loadingIndicator {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Ensure video is always visible */
+#videoPlayer {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* No loading cursor */
+* {
+    cursor: default !important;
+}
+
+body.loading {
+    cursor: default !important;
 }
