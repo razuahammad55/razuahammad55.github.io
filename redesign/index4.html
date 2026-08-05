@@ -1,0 +1,864 @@
+I can now see the full layout from your screenshot. Let me generate the necessary images first, then build the complete redesigned homepage with all the
+```html
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maßgestickt – seit 2016 Ihr Partner für hochwertige Textilveredelung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <link href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.0.0/index.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c2a',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        },
+                        teal: {
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Playfair Display', serif; }
+        body { background: #fafafa; color: #1f2937; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #fafafa; }
+        ::-webkit-scrollbar-thumb { background: #b91c2a; border-radius: 5px; }
+        html { scroll-behavior: smooth; }
+
+        /* Top bar marquee */
+        .top-marquee { animation: topMarquee 30s linear infinite; }
+        @keyframes topMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* Hero */
+        .hero-bg { animation: heroZoom 15s ease-out forwards; }
+        @keyframes heroZoom { 0% { transform: scale(1.08); } 100% { transform: scale(1); } }
+
+        /* Category cards */
+        .cat-card { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .cat-card:hover { transform: translateY(-6px); }
+        .cat-card .cat-img { transition: transform 1s ease; }
+        .cat-card:hover .cat-img { transform: scale(1.06); }
+        .cat-card .cat-overlay { transition: opacity 0.4s ease; }
+        .cat-card:hover .cat-overlay { opacity: 1; }
+
+        /* Buttons */
+        .btn-primary { position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .btn-primary::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); transition: left 0.5s; }
+        .btn-primary:hover::before { left: 100%; }
+
+        /* Link underline */
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #b91c2a; transition: width 0.3s ease; }
+        .nav-link:hover::after { width: 100%; }
+
+        /* Nav scroll */
+        .nav-scrolled { background: rgba(255,255,255,0.97); backdrop-filter: blur(20px); box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+
+        /* Mobile menu */
+        .mobile-menu { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .mobile-menu.open { transform: translateX(0); }
+
+        /* Blog card */
+        .blog-card { transition: all 0.4s ease; }
+        .blog-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.15); }
+        .blog-card .blog-img { transition: transform 0.8s ease; }
+        .blog-card:hover .blog-img { transform: scale(1.05); }
+
+        /* Feature box */
+        .feature-box { transition: transform 0.3s ease; }
+        .feature-box:hover { transform: translateY(-4px); }
+
+        /* Process step */
+        .step-number { position: relative; }
+        .step-number::after { content: ''; position: absolute; top: 50%; right: -50%; width: 100%; height: 1px; background: linear-gradient(90deg, #b91c2a, transparent); }
+        .step-number:last-child::after { display: none; }
+
+        /* Product card */
+        .product-card { transition: all 0.3s ease; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1); }
+
+        /* Sale badge pulse */
+        .sale-pulse { animation: salePulse 2s ease-in-out infinite; }
+        @keyframes salePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="bg-gray-900 text-white text-xs py-2.5 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+            <div class="hidden md:flex items-center gap-6">
+                <a href="tel:+4936741575010" class="flex items-center gap-2 hover:text-brand-500 transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                    +49 36741 57 50 10
+                </a>
+                <a href="mailto:info@massgestickt.de" class="flex items-center gap-2 hover:text-brand-500 transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    info@massgestickt.de
+                </a>
+            </div>
+            <div class="flex items-center gap-4 ml-auto">
+                <div class="flex items-center gap-3">
+                    <a href="#" class="hover:text-brand-500 transition"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+                    <a href="#" class="hover:text-brand-500 transition"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+                    <a href="#" class="hover:text-brand-500 transition"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+                </div>
+                <div class="hidden md:flex items-center gap-2 pl-4 border-l border-white/20">
+                    <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                    <span class="text-gray-300">Lieferung DE, EU + Schweiz</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header id="mainHeader" class="sticky top-0 z-40 bg-white transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between h-20">
+                <a href="#" class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-brand-700 rounded-lg flex items-center justify-center">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 12l10 5 10-5M2 17l10 5 10-5"/></svg>
+                    </div>
+                    <div class="leading-none">
+                        <div class="font-display text-2xl font-bold text-gray-900">Maßgestickt<span class="text-brand-700">®</span></div>
+                        <div class="text-[10px] tracking-[0.2em] uppercase text-gray-500 mt-0.5">Textilveredelung · Seit 2016</div>
+                    </div>
+                </a>
+
+                <div class="hidden lg:flex flex-1 max-w-md mx-8">
+                    <div class="relative w-full">
+                        <input type="text" placeholder="Suche..." class="w-full px-4 py-2.5 pr-10 bg-gray-100 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-brand-700 focus:bg-white transition">
+                        <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <a href="#" class="hidden md:flex w-10 h-10 rounded-full bg-gray-100 items-center justify-center text-gray-600 hover:bg-brand-50 hover:text-brand-700 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </a>
+                    <a href="#" class="hidden md:flex w-10 h-10 rounded-full bg-gray-100 items-center justify-center text-gray-600 hover:bg-brand-50 hover:text-brand-700 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                    </a>
+                    <a href="#" class="hidden md:flex w-10 h-10 rounded-full bg-gray-100 items-center justify-center text-gray-600 hover:bg-brand-50 hover:text-brand-700 transition relative">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                    </a>
+                    <a href="#contact" class="btn-primary hidden md:inline-flex px-5 py-2.5 bg-brand-700 text-white text-sm font-medium rounded-full hover:bg-brand-800">
+                        ANFRAGE
+                    </a>
+                    <a href="#" class="flex items-center gap-2 px-4 py-2.5 bg-gray-100 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-200 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                        <span>0,00 €</span>
+                    </a>
+                    <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="hidden lg:flex items-center justify-center gap-8 pb-4 border-t border-gray-100 pt-3">
+                <a href="#" class="nav-link text-sm font-medium text-gray-700 hover:text-brand-700">PRODUKTE</a>
+                <a href="#" class="nav-link text-sm font-medium text-gray-700 hover:text-brand-700">THEMENWELTEN</a>
+                <a href="#" class="nav-link text-sm font-medium text-gray-700 hover:text-brand-700">STICK & DRUCK</a>
+                <a href="#" class="nav-link text-sm font-medium text-gray-700 hover:text-brand-700">UNSERE MARKEN</a>
+                <a href="#contact" class="nav-link text-sm font-medium text-gray-700 hover:text-brand-700">KONTAKT</a>
+                <a href="#blog" class="nav-link text-sm font-medium text-gray-700 hover:text-brand-700">BLOG</a>
+                <a href="#" class="text-sm font-bold text-brand-700">% SALE %</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-full h-full bg-white z-50 p-6 lg:hidden overflow-y-auto">
+        <div class="flex justify-between items-center mb-8">
+            <span class="font-display text-xl font-bold">Maßgestickt®</span>
+            <button id="closeMenu" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6"/></svg>
+            </button>
+        </div>
+        <div class="flex flex-col gap-5">
+            <a href="#" class="text-lg font-medium text-gray-800 mobile-link">Produkte</a>
+            <a href="#" class="text-lg font-medium text-gray-800 mobile-link">Themenwelten</a>
+            <a href="#" class="text-lg font-medium text-gray-800 mobile-link">Stick & Druck</a>
+            <a href="#" class="text-lg font-medium text-gray-800 mobile-link">Unsere Marken</a>
+            <a href="#contact" class="text-lg font-medium text-gray-800 mobile-link">Kontakt</a>
+            <a href="#blog" class="text-lg font-medium text-gray-800 mobile-link">Blog</a>
+            <a href="#" class="text-lg font-bold text-brand-700 mobile-link">% SALE %</a>
+            <a href="#contact" class="btn-primary mt-4 px-6 py-3 bg-brand-700 text-white text-center rounded-full mobile-link">Anfrage senden</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative h-[600px] lg:h-[700px] overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/19b9a1efa-e045-463c-9d9d-bd9cc3a4310a.png" alt="Sport Team" class="hero-bg w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/60 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/40 to-transparent"></div>
+        </div>
+        <div class="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
+            <div class="max-w-2xl" data-aos="fade-up" data-aos-duration="1000">
+                <div class="inline-flex items-center gap-3 mb-6 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                    <span class="text-xs tracking-wider uppercase text-white">Maßgestickt – seit 2016 Ihr Partner für hochwertige Textilveredelung</span>
+                </div>
+                <h1 class="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.05] mb-6">
+                    Kleidung besticken<br>oder <span class="text-brand-500">bedrucken?</span>
+                </h1>
+                <p class="text-lg text-white/80 leading-relaxed mb-8 max-w-lg">
+                    Kleidung und Accessoires mit Ihren Logos für Ihr Team im Job- und Vereinsleben
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#categories" class="btn-primary px-8 py-4 bg-brand-700 text-white font-medium rounded-full inline-flex items-center gap-3 hover:bg-brand-800">
+                        PRODUKTE ANSEHEN
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                    <a href="#contact" class="px-8 py-4 bg-white text-gray-900 font-medium rounded-full inline-flex items-center gap-3 hover:bg-gray-100 transition">
+                        SCHNELLANFRAGE
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3 Main Categories -->
+    <section class="py-16 lg:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+                <div class="cat-card group cursor-pointer" data-aos="fade-up" data-aos-delay="0">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/3] bg-gray-100">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/15a8f7a75-8b9f-413a-b410-8f3c34edfd64.png" alt="Stickerei" class="cat-img w-full h-full object-cover">
+                        <div class="cat-overlay absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-60"></div>
+                        <div class="absolute inset-0 flex items-end p-8">
+                            <div>
+                                <div class="inline-flex items-center gap-2 mb-3">
+                                    <span class="w-8 h-0.5 bg-brand-500"></span>
+                                    <span class="text-xs tracking-widest uppercase text-white/80">Kategorie 01</span>
+                                </div>
+                                <h3 class="font-display text-3xl font-bold text-white mb-2">Stickerei</h3>
+                                <p class="text-white/70 text-sm">Hochwertige Bestickung für Textilien</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-card group cursor-pointer" data-aos="fade-up" data-aos-delay="100">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/3] bg-gray-100">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/1667e3b41-0bea-4ff9-80c2-72a5d4f74d4f.png" alt="3D-Stickerei" class="cat-img w-full h-full object-cover">
+                        <div class="cat-overlay absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-60"></div>
+                        <div class="absolute inset-0 flex items-end p-8">
+                            <div>
+                                <div class="inline-flex items-center gap-2 mb-3">
+                                    <span class="w-8 h-0.5 bg-brand-500"></span>
+                                    <span class="text-xs tracking-widest uppercase text-white/80">Kategorie 02</span>
+                                </div>
+                                <h3 class="font-display text-3xl font-bold text-white mb-2">3D-Stickerei</h3>
+                                <p class="text-white/70 text-sm">Erhabene Stickeffekte für Caps & mehr</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-card group cursor-pointer" data-aos="fade-up" data-aos-delay="200">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/3] bg-gray-100">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/1640c72d4-a071-4c61-bc1e-8e60651a28da.png" alt="Textildruck" class="cat-img w-full h-full object-cover">
+                        <div class="cat-overlay absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-60"></div>
+                        <div class="absolute inset-0 flex items-end p-8">
+                            <div>
+                                <div class="inline-flex items-center gap-2 mb-3">
+                                    <span class="w-8 h-0.5 bg-brand-500"></span>
+                                    <span class="text-xs tracking-widest uppercase text-white/80">Kategorie 03</span>
+                                </div>
+                                <h3 class="font-display text-3xl font-bold text-white mb-2">Textildruck</h3>
+                                <p class="text-white/70 text-sm">Sublimation, Siebdruck & Digitaldruck</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Grid -->
+    <section id="categories" class="py-16 lg:py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-14" data-aos="fade-up">
+                <span class="text-xs tracking-[0.3em] uppercase text-brand-700 font-medium">Unsere Themenwelten</span>
+                <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mt-3 mb-4">Entdecken Sie unsere <span class="text-brand-700">Kategorien</span></h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Von Arbeitskleidung bis Gastronomie – wir besticken und bedrucken Textilien für jeden Bereich</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+                <!-- Row 1 -->
+                <div class="cat-card group cursor-pointer col-span-2 md:col-span-1" data-aos="fade-up" data-aos-delay="0">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-gray-200">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/1445b9694-d6f8-4ad3-b71c-5fe2d27c30b6.png" alt="Arbeitskleidung" class="cat-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6">
+                            <h3 class="font-display text-2xl font-bold text-white">Arbeitskleidung</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-card group cursor-pointer" data-aos="fade-up" data-aos-delay="50">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-gray-200">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/1d03fb395-f35b-4701-b8f6-a7fa9dbbf20e.png" alt="Bio / Recycelt" class="cat-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6">
+                            <h3 class="font-display text-2xl font-bold text-white">Bio / Recycelt</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-card group cursor-pointer" data-aos="fade-up" data-aos-delay="100">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-gray-200">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/12e3d4fa8-b7f3-4d1d-bcc3-cd0ed36ba622.png" alt="Caps" class="cat-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6">
+                            <h3 class="font-display text-2xl font-bold text-white">Caps</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-card group cursor-pointer hidden lg:block" data-aos="fade-up" data-aos-delay="150">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-gray-200">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/17bb51d4d-246b-447d-8292-30e3e245fe16.png" alt="Poloshirts" class="cat-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6">
+                            <h3 class="font-display text-2xl font-bold text-white">Poloshirts</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="cat-card group cursor-pointer" data-aos="fade-up" data-aos-delay="0">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-gray-200">
+                        <div class="absolute inset-0 bg-gradient-to-br from-brand-600 to-brand-800"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-center p-6">
+                                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                                </div>
+                                <h3 class="font-display text-2xl font-bold text-white">Bestseller</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-card group cursor-pointer" data-aos="fade-up" data-aos-delay="50">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-gray-200">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-900"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-center p-6">
+                                <svg class="w-16 h-16 mx-auto mb-4 text-white/80" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                                <h3 class="font-display text-2xl font-bold text-white">Taschen</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-card group cursor-pointer" data-aos="fade-up" data-aos-delay="100">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-gray-200">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/17bb51d4d-246b-447d-8292-30e3e245fe16.png" alt="Poloshirts" class="cat-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6">
+                            <h3 class="font-display text-2xl font-bold text-white">Poloshirts</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-card group cursor-pointer" data-aos="fade-up" data-aos-delay="150">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-gray-200">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-600 to-gray-800"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-center p-6">
+                                <svg class="w-16 h-16 mx-auto mb-4 text-white/80" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.38 3.46L16 2 12 3.46 8 2 3.62 3.46a2 2 0 00-1.34 1.89v13.3a2 2 0 002.66 1.89L8 19l4 1.46L16 19l4.38 1.54a2 2 0 002.66-1.89V5.35a2 2 0 00-1.34-1.89z"/></svg>
+                                <h3 class="font-display text-2xl font-bold text-white">Sweatshirts</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="cat-card group cursor-pointer" data-aos="fade-up" data-aos-delay="0">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-gray-200">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-black"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-center p-6">
+                                <div class="text-5xl font-bold text-white mb-2">XXXXXL</div>
+                                <div class="text-white/70 text-sm">SIZE</div>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6">
+                            <h3 class="font-display text-2xl font-bold text-white">Große Größen</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-card group cursor-pointer" data-aos="fade-up" data-aos-delay="50">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-gray-200">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-700 to-blue-900"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-center p-6">
+                                <svg class="w-16 h-16 mx-auto mb-4 text-white/80" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.38 3.46L16 2 12 3.46 8 2 3.62 3.46a2 2 0 00-1.34 1.89v13.3a2 2 0 002.66 1.89L8 19l4 1.46L16 19l4.38 1.54a2 2 0 002.66-1.89V5.35a2 2 0 00-1.34-1.89z"/></svg>
+                                <h3 class="font-display text-2xl font-bold text-white">Hemden + Blusen</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-card group cursor-pointer col-span-2 md:col-span-1 lg:col-span-2" data-aos="fade-up" data-aos-delay="100">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[4/5] md:aspect-auto md:h-full bg-gray-200">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/18f46c379-fd79-4493-8d4f-6920152a8e3e.png" alt="Gastronomie" class="cat-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6">
+                            <h3 class="font-display text-2xl font-bold text-white">Gastronomie</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Über uns / Alles aus einer Hand -->
+    <section class="py-20 lg:py-28 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <div class="relative" data-aos="fade-right">
+                    <div class="relative rounded-2xl overflow-hidden aspect-[4/5]">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/13a036959-2e85-4952-87cb-6137e1a1df21.png" alt="Stickerei Maschine" class="w-full h-full object-cover">
+                        <div class="absolute top-6 left-6 bg-brand-700 text-white px-4 py-2 rounded-full text-xs font-bold tracking-wider">ÜBER UNS</div>
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 hidden lg:block grid grid-cols-2 gap-3">
+                        <div class="w-32 h-32 rounded-xl overflow-hidden shadow-xl">
+                            <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/13a036959-2e85-4952-87cb-6137e1a1df21.png" alt="Stickerei Detail" class="w-full h-full object-cover">
+                        </div>
+                        <div class="w-32 h-32 rounded-xl overflow-hidden shadow-xl bg-gray-900 flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="font-display text-3xl font-bold text-brand-500">HB</div>
+                                <div class="text-white/60 text-xs mt-1">Wappen</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div data-aos="fade-left">
+                    <span class="text-xs tracking-[0.3em] uppercase text-brand-700 font-medium">Alles aus einer Hand</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-6 leading-tight">Von der Anfrage bis zur fertigen <span class="text-brand-700">Bestickung</span></h2>
+                    <p class="text-gray-600 leading-relaxed mb-6">
+                        Von Ihrer Anfrage oder direkten Bestellung über die Webseite unserer Online Stickerei, der Aufbereitung der Logos in Stickdateien oder Druckdateien bis zum Besticken und Bedrucken der Textilien: Alle Schritte werden von unserem Team direkt ausgeführt. Wir nutzen hochmoderne Industriestickmaschinen und investieren laufend in Maschinen, Ausstattung und die Schulung unseres Teams, um für Sie immer besser zu werden. Das garantiert eine hochwertige Umsetzung und genaues Arbeiten. Auch im textilen Printbereich sind wir top aufgestellt. Wir bieten für jedes Logo, jedes Textil und jede Stückzahl und jedes Einsatzgebiet das passende Druckverfahren an: Sublimation, Siebdruck, Digitaldruck, Flexdruck und Beflockung. Wir können auch in 3D sticken!
+                    </p>
+                    <div class="border-t border-gray-200 pt-6 mt-6">
+                        <h3 class="font-display text-2xl font-bold text-gray-900 mb-3">Service mit direktem Ansprechpartner</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Bei uns wird SERVICE und BERATUNG großgeschrieben. Sie erreichen uns telefonisch, per Mail, über die Webseite oder auch persönlich bei uns vor Ort. Gern sind wir Ihnen behilflich bei der Auswahl der Textilien oder der Umsetzung Ihrer Wünsche.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="py-20 lg:py-28 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-14" data-aos="fade-up">
+                <span class="text-xs tracking-[0.3em] uppercase text-brand-700 font-medium">Aktuelles</span>
+                <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mt-3">Unser <span class="text-brand-700">Blog</span></h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+                <article class="blog-card bg-white rounded-2xl overflow-hidden shadow-sm" data-aos="fade-up" data-aos-delay="0">
+                    <div class="relative overflow-hidden aspect-[16/10]">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/108e6098a-609f-40c1-a024-5757f0422e17.png" alt="Feuerwehr" class="blog-img w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-brand-700 text-white text-xs font-bold px-3 py-1 rounded-full">BLOG</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-bold text-gray-900 mb-3">Feuerwehr Kleidung besticken lassen</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4">Feuerwehrbekleidung besticken lassen – individuell mit Ihren Logos und Wappen und hochwertig für Ihre Gemeinschaft.[…]</p>
+                        <a href="#" class="text-brand-700 text-sm font-medium inline-flex items-center gap-2 hover:gap-3 transition-all">Weiterlesen <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                    </div>
+                </article>
+                <article class="blog-card bg-white rounded-2xl overflow-hidden shadow-sm" data-aos="fade-up" data-aos-delay="100">
+                    <div class="relative overflow-hidden aspect-[16/10]">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/169b912ef-42e3-4758-8b7c-6d256131bfd1.png" alt="Schals" class="blog-img w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-brand-700 text-white text-xs font-bold px-3 py-1 rounded-full">BLOG</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-bold text-gray-900 mb-3">Schals mit eigenem Logo</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4">Fansschals mit eigenem Logo sind immer wieder gern gefragt. Aber gerade bei Schals gibt es[…]</p>
+                        <a href="#" class="text-brand-700 text-sm font-medium inline-flex items-center gap-2 hover:gap-3 transition-all">Weiterlesen <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                    </div>
+                </article>
+                <article class="blog-card bg-white rounded-2xl overflow-hidden shadow-sm" data-aos="fade-up" data-aos-delay="200">
+                    <div class="relative overflow-hidden aspect-[16/10]">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/1a82fc67b-9d82-4a64-af99-6351406b2c5d.png" alt="Online Stickerei" class="blog-img w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-brand-700 text-white text-xs font-bold px-3 py-1 rounded-full">BLOG</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-bold text-gray-900 mb-3">Online Stickerei</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4">Willkommen in der Online Stickerei. Hier eröffnen sich viele Möglichkeiten der Textilveredelung, die Sie direkt[…]</p>
+                        <a href="#" class="text-brand-700 text-sm font-medium inline-flex items-center gap-2 hover:gap-3 transition-all">Weiterlesen <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3 Feature Boxes -->
+    <section class="py-16 lg:py-20 bg-gradient-to-br from-teal-600 to-teal-700">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+                <div class="feature-box text-center text-white" data-aos="fade-up" data-aos-delay="0">
+                    <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-3">Motivoptimierung</h3>
+                    <p class="text-white/80 text-sm leading-relaxed">Wenn Sie sich nicht sicher sind, ob Ihr Logo besser gedruckt oder gestickt werden sollte, beraten wir Sie gern.</p>
+                </div>
+                <div class="feature-box text-center text-white" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-3">Profi-Datencheck</h3>
+                    <p class="text-white/80 text-sm leading-relaxed">Sparen Sie sich Zeit und senden uns einfach die Logos und Ihre Wünsche zu! Wir überprüfen Ihre Daten.</p>
+                </div>
+                <div class="feature-box text-center text-white" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-3">Express-Service</h3>
+                    <p class="text-white/80 text-sm leading-relaxed">Ihre Anfrage ist immer kostenlos und unverbindlich! Bei Fragen sind wir behilflich.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Long Text Content -->
+    <section class="py-20 lg:py-28 bg-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <span class="text-xs tracking-[0.3em] uppercase text-brand-700 font-medium">So funktioniert's</span>
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-4">Kleidung einfach besticken und bedrucken lassen</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 mb-12" data-aos="fade-up">
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-4">So geht Kleidung besticken heute:</h3>
+                    <p class="text-gray-600 leading-relaxed mb-4">Von Ihrem Angebot per E-Mail, der Aufbereitung der Logos in Stickdateien oder Druckdateien bis zum Besticken und Bedrucken der Textilien vergehen bei uns nur wenige Tage. Sie erhalten damit nicht nur schnell Ihre Bestellung, sondern werden überrascht von der hochwertigen Qualität sein. Wie wir das schaffen? Indem wir alle Schritte selbst übernehmen und entsprechend auch unsere Kleidung selbst besticken.</p>
+                    <p class="text-gray-600 leading-relaxed"><strong class="text-gray-900">Aber keine Sorge:</strong> Wir starten erst nach Ihrer Freigabe der Voransichten!</p>
+                </div>
+                <div>
+                    <p class="text-gray-600 leading-relaxed mb-4">Wir nutzen zum Textilien besticken hochmoderne Industriestickmaschinen und investieren laufend in neue Innovationen, in unsere professionelle Ausstattung und in die Schulung unseres Teams. Damit stellen wir sicher, dass wir immer besser werden, um Ihre Textilien auf höchstem Niveau zu besticken oder zu bedrucken. Eine Garantie für die hochwertige Umsetzung schaffen wir mit unseren exakten und präzisen Arbeitsschritten beim Kleidung besticken. Auch im textilen Printbereich sind wir als einer der führenden Hersteller am Markt gut aufgestellt. Wir bieten für jedes Logo, jedes Textil und jede Stückzahl das passende Druckverfahren an: Sublimation, Siebdruck, Digitaldruck, Flexdruck und Beflockung. Auch ist es uns möglich, auf Caps 3D zu sticken.</p>
+                </div>
+            </div>
+
+            <!-- Steps -->
+            <div class="bg-gray-50 rounded-2xl p-8 lg:p-12 mb-12" data-aos="fade-up">
+                <h3 class="font-display text-2xl font-bold text-gray-900 mb-8 text-center">Ihr Weg zur bestickten Kleidung</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-700 text-white flex items-center justify-center font-bold shrink-0">1</div>
+                        <div>
+                            <div class="font-semibold text-gray-900 mb-1">Kleidung aussuchen</div>
+                            <div class="text-sm text-gray-600">Wählen Sie aus unserem großen Sortiment</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-700 text-white flex items-center justify-center font-bold shrink-0">2</div>
+                        <div>
+                            <div class="font-semibold text-gray-900 mb-1">Farbe, Mengen und Größen aussuchen</div>
+                            <div class="text-sm text-gray-600">Individuell nach Ihren Wünschen</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-700 text-white flex items-center justify-center font-bold shrink-0">3</div>
+                        <div>
+                            <div class="font-semibold text-gray-900 mb-1">Logos hochladen und Texte platzieren</div>
+                            <div class="text-sm text-gray-600">Einfach per Drag & Drop</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-700 text-white flex items-center justify-center font-bold shrink-0">4</div>
+                        <div>
+                            <div class="font-semibold text-gray-900 mb-1">"Anfrage senden" anklicken</div>
+                            <div class="text-sm text-gray-600">In nur wenigen Klicks</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-700 text-white flex items-center justify-center font-bold shrink-0">5</div>
+                        <div>
+                            <div class="font-semibold text-gray-900 mb-1">Ein individuelles Angebot per Mail erhalten</div>
+                            <div class="text-sm text-gray-600">Innerhalb von 24 Stunden</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold shrink-0">✓</div>
+                        <div>
+                            <div class="font-semibold text-gray-900 mb-1">Selbstverständlich unverbindlich und kostenlos</div>
+                            <div class="text-sm text-gray-600">Ohne Risiko bestellen</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Content -->
+            <div class="space-y-8" data-aos="fade-up">
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-3">Leistungen beim Textilien besticken und bedrucken</h3>
+                    <p class="text-gray-600 leading-relaxed">Service und Beratung beim Besticken und Bedrucken von Textilien wird bei uns großgeschrieben. Haben Sie Fragen oder benötigen Sie eine umfassende Beratung, dann erreichen Sie uns telefonisch, per E-Mail, über die Webseite oder auch persönlich bei uns vor Ort. Wir helfen Ihnen bei der Auswahl der Textilien und der Umsetzung Ihrer individuellen Wünsche. Unter anderem finden Sie bei uns die nachfolgenden Leistungen:</p>
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-3">Textilien besticken: Vereins- und Arbeitsbekleidung</h3>
+                    <p class="text-gray-600 leading-relaxed">Lassen Sie Ihre gewünschte Bekleidung aus unserem Sortiment für Mannschaften oder Mitarbeiter bei uns besticken. Jedes Textil unserer großen Auswahl kann mit individuellen Logos und Wappen bestickt werden.</p>
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-3">Von der Idee bis zur fertig bestickten Kleidung</h3>
+                    <p class="text-gray-600 leading-relaxed">Erhalten Sie Ihre bestickte Kleidung mit der Post, hat das gute Stück schon eine spannende Reise hinter sich. Der Prozess endet dort, wo er begonnen hat: bei Ihnen. Denn am Anfang steht eine Idee.</p>
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-3">Motivposition für die Bestickung der Textilien</h3>
+                    <p class="text-gray-600 leading-relaxed">Sie haben Ihr Motiv, Sie haben Ihr Textil zum Besticken. Aber nun, wo hin damit? Klassisch auf die Brust? Auf den Ärmel? Auf den Rücken? Wo Sie Ihr Logo oder Ihren persönlichen Schriftzug positionieren, ist natürlich Geschmackssache und hängt von Ihren Ansprüchen ab. Sollten Sie sich nicht entscheiden können, helfen wir Ihnen gerne jederzeit mit unserer jahrelangen Erfahrung weiter.</p>
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-3">Kleidung mit Motivoptimierung besticken lassen</h3>
+                    <p class="text-gray-600 leading-relaxed">Wenn Sie sich nicht sicher sind, ob Ihr Logo besser gedruckt oder auf die Textilien gestickt werden sollte, beraten wir Sie gerne umfassend.</p>
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-3">Profi-Datencheck vor der Textil-Bestickung</h3>
+                    <p class="text-gray-600 leading-relaxed">Wir helfen Ihnen auch gerne vorab schon weiter und prüfen Logos und Daten auf die Machbarkeit von Textildruck oder Bestickung der Kleidung.</p>
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-3">Express-Service beim Textilien besticken</h3>
+                    <p class="text-gray-600 leading-relaxed">Nutzen Sie einfach und schnell die Möglichkeit der kostenlosen und unverbindlichen Anfrage. Wir sind bei all Ihren Fragen rund um den Druck oder zum Textil besticken für Sie da.</p>
+                </div>
+                <div class="bg-brand-50 border-l-4 border-brand-700 p-6 rounded-r-xl">
+                    <p class="text-gray-700 leading-relaxed italic">Wir besticken Textilien und bedrucken Kleidung ganz nach Ihren Wünschen. Wir freuen uns auf Ihre Firmenlogos, Vereinswappen, Designs, Namen und Bilder.</p>
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-3">Das macht bei uns den Unterschied: Der einfache Weg zum bestickten Textil</h3>
+                    <p class="text-gray-600 leading-relaxed">Wir bedrucken und besticken Textilien ab 10 Stück. Sie können für größere Stückzahlen ein Musterstück bei uns fertigen lassen, um sich von der Qualität selbst zu überzeugen. Vor der Bestickung oder vor dem Bedrucken erhalten Sie ein aussagekräftiges Bild zur Freigabe. So einfach kann Kleidung besticken sein.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="py-20 lg:py-28 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Unsere Empfehlungen -->
+                <div data-aos="fade-up" data-aos-delay="0">
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-6 pb-3 border-b-2 border-brand-700 inline-block">Unsere Empfehlungen</h3>
+                    <div class="space-y-4">
+                        <div class="product-card bg-white rounded-xl p-4 flex items-center gap-4">
+                            <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.38 3.46L16 2 12 3.46 8 2 3.62 3.46a2 2 0 00-1.34 1.89v13.3a2 2 0 002.66 1.89L8 19l4 1.46L16 19l4.38 1.54a2 2 0 002.66-1.89V5.35a2 2 0 00-1.34-1.89z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900 text-sm">Women's Premium Full-Zip Sweat Jacke</div>
+                                <div class="text-brand-700 font-bold mt-1">46,90 € <span class="text-xs text-gray-500 font-normal">inkl.MwSt.</span></div>
+                            </div>
+                        </div>
+                        <div class="product-card bg-white rounded-xl p-4 flex items-center gap-4">
+                            <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.38 3.46L16 2 12 3.46 8 2 3.62 3.46a2 2 0 00-1.34 1.89v13.3a2 2 0 002.66 1.89L8 19l4 1.46L16 19l4.38 1.54a2 2 0 002.66-1.89V5.35a2 2 0 00-1.34-1.89z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900 text-sm">Women's Luxury Stretch Polo</div>
+                                <div class="text-brand-700 font-bold mt-1">31,90 € <span class="text-xs text-gray-500 font-normal">inkl.MwSt.</span></div>
+                            </div>
+                        </div>
+                        <div class="product-card bg-white rounded-xl p-4 flex items-center gap-4">
+                            <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.38 3.46L16 2 12 3.46 8 2 3.62 3.46a2 2 0 00-1.34 1.89v13.3a2 2 0 002.66 1.89L8 19l4 1.46L16 19l4.38 1.54a2 2 0 002.66-1.89V5.35a2 2 0 00-1.34-1.89z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900 text-sm">Curved Classic Snapback</div>
+                                <div class="text-brand-700 font-bold mt-1">15,80 € <span class="text-xs text-gray-500 font-normal">inkl.MwSt.</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aktuell Beliebt -->
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-6 pb-3 border-b-2 border-teal-600 inline-block">Aktuell Beliebt</h3>
+                    <div class="space-y-4">
+                        <div class="product-card bg-white rounded-xl p-4 flex items-center gap-4">
+                            <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.38 3.46L16 2 12 3.46 8 2 3.62 3.46a2 2 0 00-1.34 1.89v13.3a2 2 0 002.66 1.89L8 19l4 1.46L16 19l4.38 1.54a2 2 0 002.66-1.89V5.35a2 2 0 00-1.34-1.89z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900 text-sm">Original Cuffed Beanie</div>
+                                <div class="text-teal-700 font-bold mt-1">4,99 € <span class="text-xs text-gray-500 font-normal">inkl.MwSt.</span></div>
+                            </div>
+                        </div>
+                        <div class="product-card bg-white rounded-xl p-4 flex items-center gap-4">
+                            <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.38 3.46L16 2 12 3.46 8 2 3.62 3.46a2 2 0 00-1.34 1.89v13.3a2 2 0 002.66 1.89L8 19l4 1.46L16 19l4.38 1.54a2 2 0 002.66-1.89V5.35a2 2 0 00-1.34-1.89z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900 text-sm">Stanley/Stella Unisex-Polo Prepster 2.0</div>
+                                <div class="text-teal-700 font-bold mt-1">29,50 € <span class="text-xs text-gray-500 font-normal">inkl.MwSt.</span></div>
+                            </div>
+                        </div>
+                        <div class="product-card bg-white rounded-xl p-4 flex items-center gap-4">
+                            <div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.38 3.46L16 2 12 3.46 8 2 3.62 3.46a2 2 0 00-1.34 1.89v13.3a2 2 0 002.66 1.89L8 19l4 1.46L16 19l4.38 1.54a2 2 0 002.66-1.89V5.35a2 2 0 00-1.34-1.89z"/></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900 text-sm">Low Profile 6 Panel Dad Cap</div>
+                                <div class="text-teal-700 font-bold mt-1">6,90 € <span class="text-xs text-gray-500 font-normal">inkl.MwSt.</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sale -->
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="font-display text-2xl font-bold text-gray-900 mb-6 pb-3 border-b-2 border-brand-700 inline-block">Sale</h3>
+                    <div class="relative rounded-2xl overflow-hidden aspect-square bg-gray-200">
+                        <img src="https://image.qwenlm.ai/public_source/531d1f1d-e58f-4e60-8bb5-1bbe77f9f833/14772a27a-34b8-425b-9ca3-f60a736bfe01.png" alt="Sale" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="sale-pulse inline-block bg-brand-700 text-white px-8 py-4 rounded-full font-display text-4xl font-bold mb-4">SALE</div>
+                                <div class="text-white text-lg font-medium">Bis zu 50% reduziert</div>
+                                <a href="#" class="inline-block mt-4 px-6 py-2 bg-white text-gray-900 rounded-full text-sm font-medium hover:bg-gray-100 transition">Jetzt shoppen</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Quick Links -->
+            <div class="flex flex-wrap gap-3 mb-12 pb-12 border-b border-white/10">
+                <a href="#" class="px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-brand-700 hover:border-brand-700 transition">ÜBER UNS</a>
+                <a href="#" class="px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-brand-700 hover:border-brand-700 transition">BEWERTUNGEN</a>
+                <a href="#" class="px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-brand-700 hover:border-brand-700 transition">VERSAND</a>
+                <a href="#" class="px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-brand-700 hover:border-brand-700 transition">ZAHLUNG</a>
+                <a href="#" class="px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-brand-700 hover:border-brand-700 transition">FAQ</a>
+                <a href="#" class="px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-brand-700 hover:border-brand-700 transition">AGB'S</a>
+                <a href="#" class="px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-brand-700 hover:border-brand-700 transition">DATENSCHUTZ</a>
+                <a href="#" class="px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-brand-700 hover:border-brand-700 transition">IMPRESSUM</a>
+                <a href="#" class="px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-brand-700 hover:border-brand-700 transition">VERTRAG WIDERRUFEN</a>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                <!-- Versand -->
+                <div>
+                    <h4 class="font-display text-lg font-bold mb-6 text-brand-500">Versandoptionen</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 bg-white/5 rounded-lg p-3">
+                            <div class="w-10 h-10 bg-yellow-500 rounded flex items-center justify-center font-bold text-gray-900 text-xs">dpd</div>
+                            <span class="text-sm">DPD Versand</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/5 rounded-lg p-3">
+                            <div class="w-10 h-10 bg-red-600 rounded flex items-center justify-center font-bold text-white text-xs">DHL</div>
+                            <span class="text-sm">DHL Express</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zahlung -->
+                <div>
+                    <h4 class="font-display text-lg font-bold mb-6 text-brand-500">Zahlungsarten</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 bg-white/5 rounded-lg p-3">
+                            <div class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center font-bold text-white text-xs">PP</div>
+                            <span class="text-sm">PayPal</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/5 rounded-lg p-3">
+                            <div class="w-10 h-10 bg-green-600 rounded flex items-center justify-center font-bold text-white text-xs">€</div>
+                            <span class="text-sm">Lastschrift</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/5 rounded-lg p-3">
+                            <div class="w-10 h-10 bg-gray-600 rounded flex items-center justify-center font-bold text-white text-xs">ÜW</div>
+                            <span class="text-sm">Überweisung</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beliebte Kategorien -->
+                <div>
+                    <h4 class="font-display text-lg font-bold mb-6 text-brand-500">Beliebte Kategorien</h4>
+                    <ul class="space-y-2 text-sm text-white/70">
+                        <li><a href="#" class="hover:text-brand-500 transition">Caps besticken</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition">Jacken besticken</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition">Poloshirts besticken</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition">Sweatshirts besticken</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition">T-Shirts besticken</a></li>
+                    </ul>
+                </div>
+
+                <!-- Beliebte Themenwelten -->
+                <div>
+                    <h4 class="font-display text-lg font-bold mb-6 text-brand-500">Beliebte Themenwelten</h4>
+                    <ul class="space-y-2 text-sm text-white/70">
+                        <li><a href="#" class="hover:text-brand-500 transition">Arbeitskleidung besticken</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition">Bio Kleidung besticken</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition">Gastro-Kleidung besticken</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition">Kinderkleidung besticken</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition">Textildruck</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-white/10 text-center">
+                <p class="text-xs text-white/50 mb-2">* Alle Preise inkl. MwSt., ohne Stickerei/Druck, zzgl. Versandkosten</p>
+                <p class="text-xs text-white/50">© 2026 Massgestickt für Deutschland, Europa und die Schweiz.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true, offset: 80, easing: 'ease-out-cubic' });
+
+        const header = document.getElementById('mainHeader');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) header.classList.add('nav-scrolled');
+            else header.classList.remove('nav-scrolled');
+        });
+
+        const menuBtn = document.getElementById('menuBtn');
+        const closeMenu = document.getElementById('closeMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        menuBtn.addEventListener('click', () => mobileMenu.classList.add('open'));
+        closeMenu.addEventListener('click', () => mobileMenu.classList.remove('open'));
+        mobileLinks.forEach(link => link.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const target = document.querySelector(targetId);
+                if (target) {
+                    e.preventDefault();
+                    window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```
