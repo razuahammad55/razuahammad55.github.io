@@ -233,13 +233,13 @@
             background-color: var(--invoice-bg);
             color: var(--invoice-text);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            padding: 50px 60px;
+            padding: 45px 50px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            font-size: 16px;
-            line-height: 1.5;
+            font-size: 13px;
+            line-height: 1.45;
         }
 
         .pdf-header {
@@ -253,43 +253,43 @@
         }
 
         .invoice-title {
-            font-size: 42px;
+            font-size: 30px;
             font-weight: 400;
             color: #000000;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             letter-spacing: -0.5px;
         }
 
         .invoice-meta {
-            font-size: 15px;
+            font-size: 13px;
             color: #555555;
         }
 
         .invoice-meta div {
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         /* Parties Grid (From / To) */
         .parties-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            margin-top: 55px;
-            margin-bottom: 60px;
+            gap: 48px;
+            margin-top: 35px;
+            margin-bottom: 40px;
         }
 
         .party-block h4 {
-            font-size: 17px;
+            font-size: 14px;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: #000000;
         }
 
         .party-content {
             white-space: pre-line;
             color: #1a1a1a;
-            font-size: 16px;
-            line-height: 1.6;
+            font-size: 13px;
+            line-height: 1.5;
         }
 
         /* Products Table */
@@ -297,7 +297,8 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            padding-top: 30px;
         }
 
         .products-table th {
@@ -305,18 +306,18 @@
             color: #4b5563;
             font-weight: 700;
             text-align: left;
-            padding: 14px 18px;
-            font-size: 15px;
+            padding: 10px 14px;
+            font-size: 13px;
         }
 
         .products-table th:first-child {
-            border-top-left-radius: 8px;
-            border-bottom-left-radius: 8px;
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
         }
 
         .products-table th:last-child {
-            border-top-right-radius: 8px;
-            border-bottom-right-radius: 8px;
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
         }
 
         .products-table th.text-center, .products-table td.text-center {
@@ -328,9 +329,9 @@
         }
 
         .products-table td {
-            padding: 18px;
+            padding: 14px;
             border-bottom: 1px solid var(--border-light);
-            font-size: 16px;
+            font-size: 13px;
             color: #000000;
         }
 
@@ -342,51 +343,49 @@
         .summary-container {
             display: flex;
             justify-content: flex-end;
-            margin-top: 25px;
+            margin-top: 20px;
         }
 
         .summary-box {
-            width: 320px;
+            width: 270px;
         }
 
-        /* Exact Match for Invoice Summary Header Banner */
         .summary-header {
             background-color: var(--summary-header-bg);
-            border-radius: 12px;
-            padding: 14px 22px;
+            border-radius: 8px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
-            justify-content: flex-between;
-            gap: 16px;
+            justify-content: space-between;
+            gap: 12px;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 15px;
             color: #374151;
         }
 
-        /* Exact Bar Chart Icon */
         .summary-header-icon {
             display: flex;
             align-items: flex-end;
-            gap: 3px;
-            height: 28px;
-            border-bottom: 3.5px solid #475569;
-            padding-bottom: 2px;
+            gap: 2.5px;
+            height: 22px;
+            border-bottom: 2.5px solid #475569;
+            padding-bottom: 1px;
         }
 
         .summary-header-icon .bar {
             background-color: #475569;
-            width: 5px;
+            width: 4px;
             border-radius: 1px;
         }
 
-        .summary-header-icon .bar-1 { height: 12px; }
-        .summary-header-icon .bar-2 { height: 22px; }
-        .summary-header-icon .bar-3 { height: 16px; }
+        .summary-header-icon .bar-1 { height: 10px; }
+        .summary-header-icon .bar-2 { height: 18px; }
+        .summary-header-icon .bar-3 { height: 13px; }
 
         .summary-header-text {
             flex: 1;
             text-align: right;
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 700;
             color: #374151;
         }
@@ -394,26 +393,30 @@
         .summary-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 12px;
+            margin-top: 8px;
         }
 
         .summary-table td {
-            padding: 8px 12px;
-            font-size: 16px;
+            padding: 6px 10px;
+            font-size: 13px;
             color: #1a1a1a;
+        }
+
+        #viewSubtotal, #viewTax, #viewTotal {
+            text-align: right;
         }
 
         .summary-table tr.total-row td {
             font-weight: 700;
             color: #000000;
-            padding-top: 10px;
+            padding-top: 8px;
         }
 
         /* Footer Pagination */
         .pdf-footer {
             margin-top: auto;
             text-align: right;
-            font-size: 13px;
+            font-size: 11px;
             color: #6b7280;
             padding-top: 20px;
         }
@@ -444,12 +447,6 @@
                 size: A4;
                 margin: 0;
             }
-        }
-        #viewSubtotal, #viewTax, #viewTotal {
-  text-align: right;
-}
-        .products-table{
-            padding-top: 30px;
         }
     </style>
 </head>
