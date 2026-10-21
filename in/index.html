@@ -7,7 +7,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #1a1a1a;
@@ -19,8 +19,9 @@
             --accent-hover: #1d4ed8;
             --danger-color: #ef4444;
             --invoice-bg: #ffffff;
-            --invoice-text: #111827;
+            --invoice-text: #000000;
             --table-header-bg: #e2e7ec;
+            --summary-header-bg: #e2e7ec;
             --border-light: #e5e7eb;
         }
 
@@ -136,7 +137,7 @@
 
         textarea {
             resize: vertical;
-            min-height: 90px;
+            min-height: 100px;
             line-height: 1.4;
         }
 
@@ -232,12 +233,12 @@
             background-color: var(--invoice-bg);
             color: var(--invoice-text);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            padding: 48px 56px;
+            padding: 50px 60px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            font-size: 14px;
+            font-size: 16px;
             line-height: 1.5;
         }
 
@@ -252,43 +253,43 @@
         }
 
         .invoice-title {
-            font-size: 34px;
+            font-size: 42px;
             font-weight: 400;
-            color: #111827;
-            margin-bottom: 6px;
+            color: #000000;
+            margin-bottom: 8px;
             letter-spacing: -0.5px;
         }
 
         .invoice-meta {
-            font-size: 13px;
-            color: #6b7280;
+            font-size: 15px;
+            color: #555555;
         }
 
         .invoice-meta div {
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
         /* Parties Grid (From / To) */
         .parties-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 48px;
-            margin-top: 45px;
-            margin-bottom: 50px;
+            gap: 60px;
+            margin-top: 55px;
+            margin-bottom: 60px;
         }
 
         .party-block h4 {
-            font-size: 14px;
+            font-size: 17px;
             font-weight: 700;
-            margin-bottom: 8px;
-            color: #111827;
+            margin-bottom: 10px;
+            color: #000000;
         }
 
         .party-content {
             white-space: pre-line;
-            color: #374151;
-            font-size: 13.5px;
-            line-height: 1.55;
+            color: #1a1a1a;
+            font-size: 16px;
+            line-height: 1.6;
         }
 
         /* Products Table */
@@ -296,7 +297,7 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin-bottom: 36px;
+            margin-bottom: 40px;
         }
 
         .products-table th {
@@ -304,18 +305,18 @@
             color: #4b5563;
             font-weight: 700;
             text-align: left;
-            padding: 12px 16px;
-            font-size: 13px;
+            padding: 14px 18px;
+            font-size: 15px;
         }
 
         .products-table th:first-child {
-            border-top-left-radius: 6px;
-            border-bottom-left-radius: 6px;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
         }
 
         .products-table th:last-child {
-            border-top-right-radius: 6px;
-            border-bottom-right-radius: 6px;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
         }
 
         .products-table th.text-center, .products-table td.text-center {
@@ -327,10 +328,10 @@
         }
 
         .products-table td {
-            padding: 16px;
+            padding: 18px;
             border-bottom: 1px solid var(--border-light);
-            font-size: 13.5px;
-            color: #111827;
+            font-size: 16px;
+            color: #000000;
         }
 
         .products-table td.product-title {
@@ -341,56 +342,79 @@
         .summary-container {
             display: flex;
             justify-content: flex-end;
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
         .summary-box {
-            width: 290px;
+            width: 320px;
         }
 
+        /* Exact Match for Invoice Summary Header Banner */
         .summary-header {
-            background-color: var(--table-header-bg);
-            border-radius: 6px;
-            padding: 12px 18px;
+            background-color: var(--summary-header-bg);
+            border-radius: 12px;
+            padding: 14px 22px;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            gap: 12px;
+            justify-content: flex-between;
+            gap: 16px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 18px;
             color: #374151;
         }
 
-        .summary-header svg {
-            width: 28px;
+        /* Exact Bar Chart Icon */
+        .summary-header-icon {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
             height: 28px;
-            fill: #4b5563;
+            border-bottom: 3.5px solid #475569;
+            padding-bottom: 2px;
+        }
+
+        .summary-header-icon .bar {
+            background-color: #475569;
+            width: 5px;
+            border-radius: 1px;
+        }
+
+        .summary-header-icon .bar-1 { height: 12px; }
+        .summary-header-icon .bar-2 { height: 22px; }
+        .summary-header-icon .bar-3 { height: 16px; }
+
+        .summary-header-text {
+            flex: 1;
+            text-align: right;
+            font-size: 18px;
+            font-weight: 700;
+            color: #374151;
         }
 
         .summary-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .summary-table td {
-            padding: 6px 12px;
-            font-size: 13px;
-            color: #374151;
+            padding: 8px 12px;
+            font-size: 16px;
+            color: #1a1a1a;
         }
 
         .summary-table tr.total-row td {
             font-weight: 700;
-            color: #111827;
-            padding-top: 8px;
+            color: #000000;
+            padding-top: 10px;
         }
 
         /* Footer Pagination */
         .pdf-footer {
             margin-top: auto;
             text-align: right;
-            font-size: 11px;
-            color: #9ca3af;
+            font-size: 13px;
+            color: #6b7280;
             padding-top: 20px;
         }
 
@@ -554,10 +578,12 @@ Tel: +30 6979186608</textarea>
                     <div class="summary-container">
                         <div class="summary-box">
                             <div class="summary-header">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M4 19h4V10H4v9zm6 0h4V5h-4v14zm6 0h4v-7h-4v7z"/>
-                                </svg>
-                                <span>Invoice Summary</span>
+                                <div class="summary-header-icon">
+                                    <div class="bar bar-1"></div>
+                                    <div class="bar bar-2"></div>
+                                    <div class="bar bar-3"></div>
+                                </div>
+                                <div class="summary-header-text">Invoice Summary</div>
                             </div>
                             <table class="summary-table">
                                 <tr>
