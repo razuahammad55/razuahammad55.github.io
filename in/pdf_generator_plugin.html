@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WordPress PDF Invoice Generator Plugin</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        wp: {
+                            admin: '#1d2327',
+                            blue: '#2271b1',
+                            hover: '#135e96',
+                            bg: '#f0f0f1',
+                            border: '#c3c4c7'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Typography Reset & Defaults */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            background-color: #f0f0f1;
+            color: #2c3338;
+        }
+
+        /* 1-Page Printable A4 Layout Rules */
+        .pdf-page {
+            width: 210mm;
+            height: 297mm;
+            max-height: 297mm;
+            background: #ffffff;
+            margin: 0 auto;
+            padding: 20mm 20mm 12mm 20mm;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            color: #1a1a1a;
+        }
+
+        /* Invoice Visual Elements (Exact Screenshot Match) */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .brand-name {
+            font-size: 13px;
+            color: #1a1a1a;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        .invoice-title-block {
+            text-align: right;
+        }
+
+        .invoice-title {
+            font-size: 22px;
+            font-weight: 300;
+            color: #1a1a1a;
+            line-height: 1.1;
+            margin-bottom: 4px;
+            letter-spacing: -0.2px;
+        }
+
+        .invoice-dates {
+            font-size: 11px;
+            color: #333333;
+            line-height: 1.4;
+        }
+
+        .parties-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            margin-bottom: 28px;
+            font-size: 11px;
+            line-height: 1.45;
+            color: #222222;
+        }
+
+        .party-title {
+            font-weight: 700;
+            font-size: 11.5px;
+            color: #000000;
+            margin-bottom: 3px;
+        }
+
+        .address-block {
+            white-space: pre-line;
+        }
+
+        /* Main Products Table Styling */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-bottom: 24px;
+        }
+
+        .items-table thead tr {
+            background-color: #dbe0e5;
+        }
+
+        .items-table th {
+            padding: 6px 10px;
+            text-align: left;
+            font-weight: 600;
+            color: #222222;
+            font-size: 11px;
+            border: none;
+        }
+
+        .items-table td {
+            padding: 9px 10px;
+            color: #1a1a1a;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .items-table td.product-cell {
+            font-weight: 700;
+        }
+
+        /* Invoice Summary Box Styling */
+        .summary-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .summary-box {
+            width: 190px;
+        }
+
+        .summary-header {
+            background-color: #dbe0e5;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 600;
+            color: #222222;
+            margin-bottom: 4px;
+        }
+
+        .chart-icon-box {
+            width: 22px;
+            height: 18px;
+            background-color: #9da7b1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 1.5px;
+            padding: 2.5px 3px;
+            border-radius: 1px;
+        }
+
+        .chart-icon-box span {
+            background-color: #38424d;
+            width: 2.5px;
+            border-radius: 0.5px;
+            display: block;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            line-height: 1.55;
+        }
+
+        .summary-table td {
+            padding: 1.5px 4px;
+            color: #222222;
+        }
+
+        .summary-table td.label {
+            text-align: left;
+            font-weight: 400;
+        }
+
+        .summary-table td.val {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .page-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            font-size: 10px;
+            color: #333333;
+        }
+
+        /* Print Override - Outputs strict 1-page A4 */
+        @media print {
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .pdf-preview-wrapper {
+                padding: 0 !important;
+                margin: 0 !important;
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+            .pdf-page {
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                height: 100vh !important;
+                max-height: 100vh !important;
+                margin: 0 !important;
+                padding: 18mm 18mm 10mm 18mm !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+    <!-- Top WordPress Admin Bar Mockup -->
+    <header class="bg-wp-admin text-white px-4 py-2.5 flex items-center justify-between no-print shadow-sm border-b border-slate-700">
+        <div class="flex items-center space-x-3">
+            <div class="bg-wp-blue text-white p-1.5 rounded flex items-center justify-center font-bold text-sm">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.82.13-1.61.37-2.35l4.31 11.82c.98.34 2.03.53 3.32.53s2.34-.19 3.32-.53l4.31-11.82c.24.74.37 1.53.37 2.35 0 4.41-3.59 8-8 8z"/></svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-sm tracking-wide text-white flex items-center gap-2">
+                    WP PDF Invoice Generator
+                    <span class="text-[10px] bg-sky-900 text-sky-200 px-2 py-0.5 rounded font-mono font-normal">v2.4.0</span>
+                </h1>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button onclick="resetDefaults()" class="px-3 py-1 text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 rounded transition border border-slate-600">
+                Reset Demo Data
+            </button>
+            <button onclick="window.print()" class="px-3.5 py-1 text-xs bg-wp-blue hover:bg-wp-hover text-white font-semibold rounded shadow flex items-center space-x-1.5 transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                <span>Print / Save PDF</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Plugin Main Container -->
+    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden w-full">
+
+        <!-- Left Admin Control Panel -->
+        <aside class="lg:w-[420px] xl:w-[450px] bg-white border-r border-wp-border flex flex-col overflow-y-auto no-print">
+            <div class="p-4 bg-slate-50 border-b border-wp-border flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <h2 class="font-bold text-xs uppercase tracking-wider text-slate-700">Invoice Settings &amp; Repeater</h2>
+                </div>
+                <span class="text-[11px] text-slate-500 font-mono">Dynamic Live Editor</span>
+            </div>
+
+            <div class="p-4 space-y-5 text-xs">
+
+                <!-- Meta Fields -->
+                <div class="bg-slate-50 p-3.5 rounded border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-slate-800 text-xs border-b border-slate-200 pb-1.5 flex justify-between items-center">
+                        <span>Invoice Metadata</span>
+                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Invoice Number</label>
+                            <input type="text" id="docNumber" value="0007" oninput="updateDocument()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-wp-blue focus:border-wp-blue outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Currency Symbol</label>
+                            <select id="currencySymbol" onchange="updateDocument()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-wp-blue focus:border-wp-blue outline-none bg-white">
+                                <option value="€">€ (EUR)</option>
+                                <option value="$">$ (USD)</option>
+                                <option value="£">£ (GBP)</option>
+                                <option value="৳">৳ (BDT)</option>
+                                <option value="¥">¥ (JPY)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Issued Date</label>
+                            <input type="date" id="issueDate" value="2026-10-22" onchange="updateDocument()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-wp-blue focus:border-wp-blue outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Due Date</label>
+                            <input type="date" id="dueDate" value="2026-10-29" onchange="updateDocument()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-wp-blue focus:border-wp-blue outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Addresses Block -->
+                <div class="bg-slate-50 p-3.5 rounded border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-slate-800 text-xs border-b border-slate-200 pb-1.5">Addresses (From / To)</h3>
+                    <div class="space-y-2.5">
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">From Details</label>
+                            <textarea id="fromDetails" rows="4" oninput="updateDocument()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded font-mono text-[11px] leading-tight focus:ring-1 focus:ring-wp-blue focus:border-wp-blue outline-none">Razu Ahammad
+Uttar Salna
+1706 Gazipur
+Bangladesh
+razuahammad55@gmail.com
++8801721943423</textarea>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">To Details</label>
+                            <textarea id="toDetails" rows="5" oninput="updateDocument()" class="w-full px-2.5 py-1.5 border border-slate-300 rounded font-mono text-[11px] leading-tight focus:ring-1 focus:ring-wp-blue focus:border-wp-blue outline-none">Stavrianou Pelagia Eleftheria
+Marketing and Consultancy Services
+Chatzikonstanti 22, Psichiko, 15452
+Tax Number: EL125141664
+Tax Office: KEFODE ATTIKIS
+p-stavrianou@hotmail.com
+Tel: +30 6979186608</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Repeater Fields -->
+                <div class="bg-slate-50 p-3.5 rounded border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-1.5">
+                        <h3 class="font-bold text-slate-800 text-xs">Products / Line Items</h3>
+                        <button onclick="addItem()" class="px-2 py-0.5 text-[11px] bg-wp-blue text-white rounded hover:bg-wp-hover font-semibold transition">
+                            + Add Line Item
+                        </button>
+                    </div>
+                    <div id="itemsContainer" class="space-y-3">
+                        <!-- Dynamic Repeater Rows Inject Here -->
+                    </div>
+                </div>
+
+                <!-- Tax Settings -->
+                <div class="bg-slate-50 p-3.5 rounded border border-slate-200 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="font-medium text-slate-600">Tax Amount / Rate</label>
+                        <div class="flex items-center space-x-1">
+                            <input type="number" id="taxValue" value="0.00" min="0" step="0.01" oninput="updateDocument()" class="w-24 px-2 py-1 border border-slate-300 rounded text-right focus:ring-1 focus:ring-wp-blue outline-none">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- Right Side - Printable PDF Canvas Preview -->
+        <main class="flex-1 bg-slate-200 overflow-y-auto p-4 md:p-8 flex justify-center items-start pdf-preview-wrapper">
+            
+            <!-- Exact PDF A4 Paper Render -->
+            <div id="pdf-preview-area" class="pdf-page">
+                
+                <div class="page-body">
+                    <!-- Top Header -->
+                    <div class="top-header">
+                        <div class="brand-name" id="previewSenderBrand">Razu Ahammad</div>
+                        <div class="invoice-title-block">
+                            <div class="invoice-title">Invoice: <span id="previewDocNumber">0007</span></div>
+                            <div class="invoice-dates">
+                                <div>Issued on: <span id="previewIssueDate">2026-10-22</span></div>
+                                <div>Due by: <span id="previewDueDate">2026-10-29</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Parties Grid -->
+                    <div class="parties-grid">
+                        <div>
+                            <div class="party-title">From</div>
+                            <div id="previewFrom" class="address-block">Razu Ahammad
+Uttar Salna
+1706 Gazipur
+Bangladesh
+razuahammad55@gmail.com
++8801721943423</div>
+                        </div>
+                        <div>
+                            <div class="party-title">To</div>
+                            <div id="previewTo" class="address-block">Stavrianou Pelagia Eleftheria
+Marketing and Consultancy Services
+Chatzikonstanti 22, Psichiko, 15452
+Tax Number: EL125141664
+Tax Office: KEFODE ATTIKIS
+p-stavrianou@hotmail.com
+Tel: +30 6979186608</div>
+                        </div>
+                    </div>
+
+                    <!-- Products Table -->
+                    <table class="items-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 48%;">Product</th>
+                                <th style="width: 14%; text-align: center;">Quantity</th>
+                                <th style="width: 14%; text-align: right;">Unit Price</th>
+                                <th style="width: 10%; text-align: center;">Tax</th>
+                                <th style="width: 14%; text-align: right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="previewTableBody">
+                            <!-- Populated Dynamically -->
+                        </tbody>
+                    </table>
+
+                    <!-- Invoice Summary Block -->
+                    <div class="summary-container">
+                        <div class="summary-box">
+                            <div class="summary-header">
+                                <div class="chart-icon-box">
+                                    <span style="height: 5px;"></span>
+                                    <span style="height: 9px;"></span>
+                                    <span style="height: 7px;"></span>
+                                    <span style="height: 12px;"></span>
+                                </div>
+                                <div>Invoice Summary</div>
+                            </div>
+                            <table class="summary-table">
+                                <tbody>
+                                    <tr>
+                                        <td class="label">Subtotal</td>
+                                        <td class="val" id="previewSubtotal">€ 200.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Tax</td>
+                                        <td class="val" id="previewTax">€ 0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">Total</td>
+                                        <td class="val" id="previewTotal">€ 200.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strict Page Number Footer -->
+                <footer class="page-footer">
+                    <span>1 / 1</span>
+                </footer>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Application Engine Logic -->
+    <script>
+        // State Management
+        let items = [
+            { name: 'English to Italian Translation', qty: 1, price: 200.00, tax: '' }
+        ];
+
+        function renderItemInputs() {
+            const container = document.getElementById('itemsContainer');
+            container.innerHTML = '';
+            items.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'p-2.5 bg-white border border-slate-200 rounded shadow-sm space-y-2 relative';
+                itemDiv.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-[11px] text-slate-500">Item #${index + 1}</span>
+                        ${items.length > 1 ? `<button onclick="removeItem(${index})" class="text-red-500 hover:text-red-700 text-[11px] font-semibold">Remove</button>` : ''}
+                    </div>
+                    <div>
+                        <input type="text" value="${escapeHtml(item.name)}" placeholder="Product / Description" oninput="updateItem(${index}, 'name', this.value)" class="w-full px-2 py-1 border border-slate-300 rounded text-xs focus:ring-1 focus:ring-wp-blue outline-none">
+                    </div>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <div>
+                            <label class="block text-[10px] font-medium text-slate-500">Qty</label>
+                            <input type="number" min="1" value="${item.qty}" oninput="updateItem(${index}, 'qty', parseFloat(this.value) || 0)" class="w-full px-2 py-1 border border-slate-300 rounded text-xs text-center focus:ring-1 focus:ring-wp-blue outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-medium text-slate-500">Unit Price</label>
+                            <input type="number" step="0.01" value="${item.price}" oninput="updateItem(${index}, 'price', parseFloat(this.value) || 0)" class="w-full px-2 py-1 border border-slate-300 rounded text-xs text-right focus:ring-1 focus:ring-wp-blue outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-medium text-slate-500">Tax</label>
+                            <input type="text" value="${escapeHtml(item.tax)}" placeholder="-" oninput="updateItem(${index}, 'tax', this.value)" class="w-full px-2 py-1 border border-slate-300 rounded text-xs text-center focus:ring-1 focus:ring-wp-blue outline-none">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        function addItem() {
+            items.push({ name: '', qty: 1, price: 0.00, tax: '' });
+            renderItemInputs();
+            updateDocument();
+        }
+
+        function removeItem(index) {
+            items.splice(index, 1);
+            renderItemInputs();
+            updateDocument();
+        }
+
+        function updateItem(index, field, value) {
+            items[index][field] = value;
+            updateDocument();
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        function updateDocument() {
+            // Document Metadata
+            const docNum = document.getElementById('docNumber').value || '0001';
+            const issueDate = document.getElementById('issueDate').value || '';
+            const dueDate = document.getElementById('dueDate').value || '';
+            const currency = document.getElementById('currencySymbol').value || '€';
+            const manualTax = parseFloat(document.getElementById('taxValue').value) || 0;
+
+            document.getElementById('previewDocNumber').innerText = docNum;
+            document.getElementById('previewIssueDate').innerText = issueDate;
+            document.getElementById('previewDueDate').innerText = dueDate;
+
+            // Addresses
+            const fromText = document.getElementById('fromDetails').value;
+            const toText = document.getElementById('toDetails').value;
+
+            document.getElementById('previewFrom').innerText = fromText;
+            document.getElementById('previewTo').innerText = toText;
+
+            // First line of From becomes top sender brand
+            const brandLine = fromText.split('\n')[0] || 'Sender Name';
+            document.getElementById('previewSenderBrand').innerText = brandLine;
+
+            // Table Render
+            const tbody = document.getElementById('previewTableBody');
+            tbody.innerHTML = '';
+
+            let subtotal = 0;
+
+            items.forEach(item => {
+                const lineTotal = (item.qty || 0) * (item.price || 0);
+                subtotal += lineTotal;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="product-cell">${escapeHtml(item.name) || '-'}</td>
+                    <td style="text-align: center;">${item.qty}</td>
+                    <td style="text-align: right;">${currency} ${(item.price || 0).toFixed(2)}</td>
+                    <td style="text-align: center;">${escapeHtml(item.tax)}</td>
+                    <td style="text-align: right;">${currency} ${lineTotal.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Summary Recalculations
+            const total = subtotal + manualTax;
+
+            document.getElementById('previewSubtotal').innerText = `${currency} ${subtotal.toFixed(2)}`;
+            document.getElementById('previewTax').innerText = `${currency} ${manualTax.toFixed(2)}`;
+            document.getElementById('previewTotal').innerText = `${currency} ${total.toFixed(2)}`;
+        }
+
+        function resetDefaults() {
+            document.getElementById('docNumber').value = '0007';
+            document.getElementById('currencySymbol').value = '€';
+            document.getElementById('issueDate').value = '2026-10-22';
+            document.getElementById('dueDate').value = '2026-10-29';
+            document.getElementById('taxValue').value = '0.00';
+
+            document.getElementById('fromDetails').value = `Razu Ahammad\nUttar Salna\n1706 Gazipur\nBangladesh\nrazuahammad55@gmail.com\n+8801721943423`;
+            document.getElementById('toDetails').value = `Stavrianou Pelagia Eleftheria\nMarketing and Consultancy Services\nChatzikonstanti 22, Psichiko, 15452\nTax Number: EL125141664\nTax Office: KEFODE ATTIKIS\np-stavrianou@hotmail.com\nTel: +30 6979186608`;
+
+            items = [
+                { name: 'English to Italian Translation', qty: 1, price: 200.00, tax: '' }
+            ];
+
+            renderItemInputs();
+            updateDocument();
+        }
+
+        // Initialize App on Load
+        renderItemInputs();
+        updateDocument();
+    </script>
+</body>
+</html>
