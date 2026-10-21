@@ -19,8 +19,9 @@
             --accent-hover: #1d4ed8;
             --danger-color: #ef4444;
             --invoice-bg: #ffffff;
-            --invoice-text: #1a1a1a;
-            --table-header-bg: #dbe0e5;
+            --invoice-text: #111827;
+            --table-header-bg: #e2e7ec;
+            --border-light: #e5e7eb;
         }
 
         * {
@@ -48,7 +49,7 @@
 
         /* Sidebar Form Controls */
         .sidebar {
-            width: 450px;
+            width: 420px;
             background-color: var(--panel-bg);
             border-right: 1px solid var(--border-color);
             display: flex;
@@ -60,9 +61,6 @@
         .sidebar-header {
             padding: 20px;
             border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .sidebar-header h2 {
@@ -120,7 +118,6 @@
         input[type="text"],
         input[type="date"],
         input[type="number"],
-        select,
         textarea {
             width: 100%;
             padding: 8px 12px;
@@ -130,17 +127,16 @@
             color: #ffffff;
             font-size: 0.85rem;
             font-family: inherit;
-            transition: border-color 0.15s ease;
         }
 
-        input:focus, select:focus, textarea:focus {
+        input:focus, textarea:focus {
             outline: none;
             border-color: var(--accent-color);
         }
 
         textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 90px;
             line-height: 1.4;
         }
 
@@ -151,7 +147,6 @@
             border-radius: 6px;
             padding: 12px;
             margin-bottom: 12px;
-            position: relative;
         }
 
         .repeater-item-header {
@@ -185,12 +180,10 @@
             font-size: 0.85rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.15s ease;
         }
 
         .btn-secondary:hover {
             background-color: rgba(255, 255, 255, 0.1);
-            border-color: var(--text-muted);
         }
 
         .btn-primary {
@@ -203,7 +196,6 @@
             font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -240,21 +232,19 @@
             background-color: var(--invoice-bg);
             color: var(--invoice-text);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            padding: 40px;
+            padding: 48px 56px;
             box-sizing: border-box;
-            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            font-size: 12px;
-            line-height: 1.4;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
         .pdf-header {
             display: flex;
             justify-content: flex-end;
             align-items: flex-start;
-            margin-bottom: 20px;
         }
 
         .invoice-title-block {
@@ -262,58 +252,70 @@
         }
 
         .invoice-title {
-            font-size: 22px;
+            font-size: 34px;
             font-weight: 400;
-            color: #1a1a1a;
+            color: #111827;
             margin-bottom: 6px;
+            letter-spacing: -0.5px;
         }
 
         .invoice-meta {
-            font-size: 11px;
-            color: #4b5563;
+            font-size: 13px;
+            color: #6b7280;
         }
 
         .invoice-meta div {
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
         /* Parties Grid (From / To) */
         .parties-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 24px;
-            margin-bottom: 32px;
+            gap: 48px;
+            margin-top: 45px;
+            margin-bottom: 50px;
         }
 
         .party-block h4 {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 700;
             margin-bottom: 8px;
-            color: #1a1a1a;
+            color: #111827;
         }
 
         .party-content {
             white-space: pre-line;
-            color: #262626;
-            font-size: 11px;
-            line-height: 1.45;
+            color: #374151;
+            font-size: 13.5px;
+            line-height: 1.55;
         }
 
         /* Products Table */
         .products-table {
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 36px;
         }
 
         .products-table th {
             background-color: var(--table-header-bg);
-            color: #374151;
-            font-weight: 600;
+            color: #4b5563;
+            font-weight: 700;
             text-align: left;
-            padding: 8px 12px;
-            font-size: 11px;
+            padding: 12px 16px;
+            font-size: 13px;
+        }
+
+        .products-table th:first-child {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+
+        .products-table th:last-child {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
         }
 
         .products-table th.text-center, .products-table td.text-center {
@@ -325,10 +327,10 @@
         }
 
         .products-table td {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 11px;
-            color: #1a1a1a;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 13.5px;
+            color: #111827;
         }
 
         .products-table td.product-title {
@@ -339,52 +341,56 @@
         .summary-container {
             display: flex;
             justify-content: flex-end;
-            margin-top: 32px;
+            margin-top: 20px;
         }
 
         .summary-box {
-            width: 260px;
+            width: 290px;
         }
 
         .summary-header {
             background-color: var(--table-header-bg);
-            padding: 8px 12px;
+            border-radius: 6px;
+            padding: 12px 18px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 8px;
-            font-weight: 600;
-            font-size: 11px;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 14px;
             color: #374151;
         }
 
         .summary-header svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
+            width: 28px;
+            height: 28px;
+            fill: #4b5563;
         }
 
         .summary-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 8px;
+            margin-top: 10px;
         }
 
         .summary-table td {
-            padding: 4px 12px;
-            font-size: 11px;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #374151;
         }
 
         .summary-table tr.total-row td {
             font-weight: 700;
+            color: #111827;
+            padding-top: 8px;
         }
 
         /* Footer Pagination */
         .pdf-footer {
             margin-top: auto;
             text-align: right;
-            font-size: 10px;
-            color: #6b7280;
+            font-size: 11px;
+            color: #9ca3af;
             padding-top: 20px;
         }
 
@@ -432,16 +438,16 @@
                     <h3>Invoice Details</h3>
                     <div class="form-group">
                         <label>Invoice Number</label>
-                        <input type="text" id="inputNumber" value="0007">
+                        <input type="text" id="inputNumber" value="0006">
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Issued Date</label>
-                            <input type="date" id="inputIssued" value="2026-10-22">
+                            <input type="date" id="inputIssued" value="2026-10-21">
                         </div>
                         <div class="form-group">
                             <label>Due Date</label>
-                            <input type="date" id="inputDue" value="2026-10-29">
+                            <input type="date" id="inputDue" value="2026-10-28">
                         </div>
                     </div>
                     <div class="form-group">
@@ -506,14 +512,14 @@ Tel: +30 6979186608</textarea>
         <!-- Live Preview Area -->
         <div class="preview-area">
             <div class="pdf-page" id="pdfPage">
-                <!-- Document Top Header -->
                 <div>
+                    <!-- Document Top Header -->
                     <div class="pdf-header">
                         <div class="invoice-title-block">
-                            <div class="invoice-title">Invoice: <span id="viewNumber">0007</span></div>
+                            <div class="invoice-title">Invoice: <span id="viewNumber">0006</span></div>
                             <div class="invoice-meta">
-                                <div>Issued on: <span id="viewIssued">2026-10-22</span></div>
-                                <div>Due by: <span id="viewDue">2026-10-29</span></div>
+                                <div>Issued on: <span id="viewIssued">2026-10-21</span></div>
+                                <div>Due by: <span id="viewDue">2026-10-28</span></div>
                             </div>
                         </div>
                     </div>
@@ -549,14 +555,14 @@ Tel: +30 6979186608</textarea>
                         <div class="summary-box">
                             <div class="summary-header">
                                 <svg viewBox="0 0 24 24">
-                                    <path d="M5 92h3v10H5zM10.5 5h3v14h-3zM16 12h3v7h-3z"/>
+                                    <path d="M4 19h4V10H4v9zm6 0h4V5h-4v14zm6 0h4v-7h-4v7z"/>
                                 </svg>
                                 <span>Invoice Summary</span>
                             </div>
                             <table class="summary-table">
                                 <tr>
                                     <td>Subtotal</td>
-                                    <td class="text-right" id="viewSubtotal">€ 0.00</td>
+                                    <td class="text-right" id="viewSubtotal">€ 200.00</td>
                                 </tr>
                                 <tr>
                                     <td>Tax</td>
@@ -564,7 +570,7 @@ Tel: +30 6979186608</textarea>
                                 </tr>
                                 <tr class="total-row">
                                     <td>Total</td>
-                                    <td class="text-right" id="viewTotal">€ 0.00</td>
+                                    <td class="text-right" id="viewTotal">€ 200.00</td>
                                 </tr>
                             </table>
                         </div>
