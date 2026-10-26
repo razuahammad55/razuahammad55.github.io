@@ -117,6 +117,7 @@
         }
 
         input[type="text"],
+        input[type="date"],
         input[type="number"],
         textarea {
             width: 100%;
@@ -478,12 +479,12 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Issued Date (DD/MM/YYYY)</label>
-                            <input type="text" id="inputIssued" placeholder="DD/MM/YYYY">
+                            <label>Issued Date</label>
+                            <input type="date" id="inputIssued">
                         </div>
                         <div class="form-group">
-                            <label>Due Date (DD/MM/YYYY)</label>
-                            <input type="text" id="inputDue" placeholder="DD/MM/YYYY">
+                            <label>Due Date</label>
+                            <input type="date" id="inputDue">
                         </div>
                     </div>
                     <div class="form-group">
@@ -624,12 +625,32 @@ Tel: +1 202-555-0147</textarea>
     </div>
 
     <script>
-        // Helper to format date as DD/MM/YYYY
-        function formatDate(dateObj) {
+        // Helper to format date object or YYYY-MM-DD string to DD/MM/YYYY
+        function formatToDDMMYYYY(dateInput) {
+            if (!dateInput) return '';
+            let dateObj;
+            if (typeof dateInput === 'string') {
+                const parts = dateInput.split('-');
+                if (parts.length === 3) {
+                    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+                dateObj = new Date(dateInput);
+            } else {
+                dateObj = dateInput;
+            }
+            if (isNaN(dateObj.getTime())) return '';
             const day = String(dateObj.getDate()).padStart(2, '0');
             const month = String(dateObj.getMonth() + 1).padStart(2, '0');
             const year = dateObj.getFullYear();
             return `${day}/${month}/${year}`;
+        }
+
+        // Helper to format date for HTML date input value (YYYY-MM-DD)
+        function formatToInputValue(dateObj) {
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const year = dateObj.getFullYear();
+            return `${year}-${month}-${day}`;
         }
 
         // Persistent Invoice Number using localStorage
@@ -648,7 +669,7 @@ Tel: +1 202-555-0147</textarea>
         inputNumber.value = initialInvoiceNum;
         viewNumber.textContent = initialInvoiceNum;
 
-        // Initialize Dates (Current Date & 7 days later in DD/MM/YYYY)
+        // Initialize Dates (Current Date & 7 days later)
         const today = new Date();
         const nextWeek = new Date();
         nextWeek.setDate(today.getDate() + 7);
@@ -658,22 +679,23 @@ Tel: +1 202-555-0147</textarea>
         const viewIssued = document.getElementById('viewIssued');
         const viewDue = document.getElementById('viewDue');
 
-        const formattedToday = formatDate(today);
-        const formattedNextWeek = formatDate(nextWeek);
+        inputIssued.value = formatToInputValue(today);
+        inputDue.value = formatToInputValue(nextWeek);
 
-        inputIssued.value = formattedToday;
-        inputDue.value = formattedNextWeek;
+        viewIssued.textContent = formatToDDMMYYYY(today);
+        viewDue.textContent = formatToDDMMYYYY(nextWeek);
 
-        viewIssued.textContent = formattedToday;
-        viewDue.textContent = formattedNextWeek;
-
-        // Update view dates when text inputs change manually
+        // Update view dates when native date pickers change
         inputIssued.addEventListener('input', e => {
-            viewIssued.textContent = e.target.value;
+            if (e.target.value) {
+                viewIssued.textContent = formatToDDMMYYYY(e.target.value);
+            }
         });
 
         inputDue.addEventListener('input', e => {
-            viewDue.textContent = e.target.value;
+            if (e.target.value) {
+                viewDue.textContent = formatToDDMMYYYY(e.target.value);
+            }
         });
 
         // Default Line Items updated to "Complete WordPress Website" at 999.00
