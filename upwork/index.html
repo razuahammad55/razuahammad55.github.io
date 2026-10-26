@@ -1,484 +1,330 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upwork WinEngine - Pro Proposal Generator</title>
+    <title>Upwork WinEngine - Dynamic 3-Rule Pitch Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            green: '#10b981',
-                            darkGreen: '#059669',
-                            upwork: '#14a800',
-                            accent: '#3b82f6'
-                        },
-                        dark: {
-                            bg: '#0b0f17',
-                            card: '#111827',
-                            border: '#1f2937',
-                            input: '#1a2234'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    }
-                }
-            }
+    <style>
+        .skeleton-loader {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.05) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
         }
-    </script>
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
 </head>
-<body class="bg-dark-bg text-gray-100 min-h-screen font-sans antialiased selection:bg-brand-green/30 selection:text-brand-green">
-
-    <!-- Header Navigation -->
-    <header class="bg-dark-card/80 backdrop-blur-md border-b border-dark-border sticky top-0 z-30">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+    <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-upwork to-emerald-400 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-brand-upwork/20">
-                    <i class="fa-solid fa-bolt text-lg"></i>
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-paper-plane text-lg"></i>
                 </div>
                 <div>
-                    <div class="flex items-center space-x-2">
-                        <h1 class="text-base font-bold text-white tracking-tight">Upwork WinEngine</h1>
-                        <span class="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-brand-upwork/10 text-brand-upwork border border-brand-upwork/20">Pro</span>
-                    </div>
-                    <p class="text-xs text-gray-400">Conversion-Engineered Pitch Generator</p>
+                    <h1 class="text-lg font-bold text-white tracking-wide">Upwork WinEngine</h1>
+                    <p class="text-xs text-slate-400">Dynamic 3-Rule Pitch Generator</p>
                 </div>
             </div>
-
-            <div class="flex items-center space-x-3">
-                <button onclick="openApiModal()" class="flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-dark-border bg-dark-input hover:bg-slate-800 text-xs font-medium text-gray-300 transition-all cursor-pointer">
-                    <i class="fa-solid fa-key text-amber-400"></i>
-                    <span id="apiKeyStatusText">Gemini API Key</span>
-                    <span id="apiKeyBadge" class="w-2 h-2 rounded-full bg-red-500"></span>
-                </button>
-                <button onclick="toggleTheme()" class="p-2 rounded-lg border border-dark-border bg-dark-input hover:bg-slate-800 text-gray-400 hover:text-white transition-colors">
-                    <i id="themeIcon" class="fa-solid fa-sun"></i>
-                </button>
-            </div>
+            <button id="openSettingsBtn" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition">
+                <i class="fa-solid fa-gear text-lg"></i>
+            </button>
         </div>
     </header>
 
-    <!-- Main App Grid -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            
-            <!-- Left Input Column -->
-            <div class="bg-dark-card rounded-2xl border border-dark-border p-6 shadow-xl space-y-5">
-                <div class="flex items-center justify-between border-b border-dark-border pb-4">
-                    <div>
-                        <h2 class="text-sm font-bold text-white flex items-center space-x-2">
-                            <i class="fa-solid fa-align-left text-brand-upwork"></i>
-                            <span>Client Job Description Snippet</span>
-                        </h2>
-                        <p class="text-xs text-gray-400 mt-0.5">Paste raw job requirements. WinEngine extracts problems, stack, and context.</p>
-                    </div>
-                    <button onclick="pasteClipboard()" class="text-xs text-brand-upwork hover:text-emerald-400 font-semibold flex items-center space-x-1 bg-brand-upwork/10 px-2.5 py-1 rounded-md border border-brand-upwork/20 transition-all">
-                        <i class="fa-solid fa-paste"></i>
-                        <span>Paste</span>
-                    </button>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col h-full">
+                <div class="flex items-center justify-between mb-4">
+                    <label for="jobDescription" class="text-sm font-semibold text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-file-lines"></i> Client Job Description Snippet *
+                    </label>
+                    <button id="clearBtn" class="text-xs text-slate-400 hover:text-slate-200 transition">Clear</button>
                 </div>
-
-                <div class="space-y-4">
-                    <div class="relative">
-                        <textarea id="jobDescription" rows="13" required
-                            class="w-full px-4 py-3.5 rounded-xl border border-dark-border bg-dark-input text-gray-100 text-sm focus:ring-2 focus:ring-brand-upwork focus:border-transparent outline-none transition-all placeholder-gray-500 font-sans leading-relaxed resize-y"
-                            placeholder="Paste client job posting here...&#10;&#10;Example:&#10;Seeking malware removal from five Wordpress sites hosted by Hostgator. Beside that, 8 unused sites need to be deleted. I tried deleting directories myself, but a persistent malware script or backdoor on hosting keeps regenerating folders next day..."></textarea>
-                    </div>
-
-                    <!-- AI Mode / Rule Mode Indicator -->
-                    <div class="flex items-center justify-between bg-dark-input/60 px-3.5 py-2.5 rounded-xl border border-dark-border/80 text-xs">
-                        <span class="text-gray-400 flex items-center space-x-2">
-                            <i class="fa-solid fa-microchip text-brand-accent"></i>
-                            <span>Engine Mode:</span>
-                        </span>
-                        <span id="engineModeBadge" class="font-semibold text-emerald-400 flex items-center space-x-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span>NLP Parser (Offline)</span>
-                        </span>
-                    </div>
-
-                    <button type="button" onclick="handleGenerate()" id="generateBtn"
-                        class="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-brand-upwork to-emerald-600 hover:from-emerald-600 hover:to-brand-upwork text-white font-bold text-sm shadow-lg shadow-brand-upwork/25 hover:shadow-brand-upwork/40 transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.99]">
-                        <i class="fa-solid fa-bolt text-base"></i>
-                        <span id="btnText">Generate Winning Proposal</span>
-                    </button>
-                </div>
+                <p class="text-xs text-slate-400 mb-3">Paste any job posting snippet. The engine dynamically analyzes the core problem, tech stack, and goals to build a tailored proposal.</p>
+                
+                <textarea id="jobDescription" class="w-full flex-1 min-h-[360px] bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-emerald-500/50 transition resize-none placeholder-slate-600 mb-6" placeholder="Paste the job description here..."></textarea>
+                
+                <button id="generateBtn" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-emerald-500/10 transition flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i id="btnSpinner" class="fa-solid fa-spinner fa-spin hidden"></i>
+                    <i id="btnIcon" class="fa-solid fa-bolt"></i>
+                    <span id="btnText">Generate Winning Proposal</span>
+                </button>
             </div>
 
-            <!-- Right Output Column -->
-            <div class="bg-dark-card rounded-2xl border border-dark-border p-6 shadow-xl space-y-5">
-                <div class="flex items-center justify-between border-b border-dark-border pb-4">
-                    <div>
-                        <h2 class="text-sm font-bold text-white flex items-center space-x-2">
-                            <i class="fa-solid fa-trophy text-amber-400"></i>
-                            <span>Tailored Winning Proposal</span>
-                        </h2>
-                        <p class="text-xs text-gray-400 mt-0.5">Strict 3-Rule formula: Diagnostic hook, 3-step action roadmap, CTA</p>
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col h-full relative overflow-hidden">
+                <div id="rightPanelOverlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-xs z-20 hidden flex-col items-center justify-center gap-3">
+                    <div class="w-12 h-12 rounded-full border-2 border-emerald-500/20 border-t-emerald-400 animate-spin flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-scissors text-sm"></i>
                     </div>
+                    <span class="text-sm font-medium text-emerald-400 animate-pulse">Generating tailored proposal...</span>
+                </div>
 
-                    <button id="copyBtn" onclick="copyProposal()" disabled
-                        class="px-4 py-2 text-xs font-semibold bg-gray-800 text-gray-500 rounded-xl border border-dark-border cursor-not-allowed transition-all flex items-center space-x-2">
-                        <i class="fa-solid fa-copy"></i>
-                        <span id="copyBtnText">Copy Proposal</span>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-sm font-semibold text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-trophy"></i> Tailored Proposal
+                        </h2>
+                        <span id="generatingBadge" class="hidden text-[10px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2 py-0.5 rounded-full items-center gap-1">
+                            <i class="fa-solid fa-scissors fa-spin text-[10px]"></i> Generating...
+                        </span>
+                    </div>
+                    <button id="copyBtn" class="bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition">
+                        <i class="fa-solid fa-copy"></i> Copy to Clipboard
                     </button>
                 </div>
+                
+                <p class="text-xs text-slate-400 mb-4">Professional, easy words, zero AI fluff, and fully custom-tailored</p>
 
-                <!-- Client Feed Snippet Preview Card (Crucial Upwork UI feature) -->
-                <div class="border border-brand-upwork/30 bg-brand-upwork/5 rounded-xl p-4 space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-bold uppercase tracking-wider text-brand-upwork flex items-center space-x-1.5">
-                            <i class="fa-solid fa-eye"></i>
-                            <span>Client Dashboard Feed Snippet (First 2 Lines)</span>
+                <div class="mb-6 bg-slate-950/60 border border-slate-800 rounded-xl p-4 relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[11px] font-bold tracking-wider text-emerald-400 uppercase flex items-center gap-1.5">
+                            <i class="fa-solid fa-eye"></i> Client Dashboard Feed Snippet (First 2 Lines)
                         </span>
-                        <span id="hookQuality" class="text-[10px] font-semibold text-gray-400">Feed Preview</span>
+                        <span class="text-[10px] text-slate-500">Hook Preview</span>
                     </div>
-                    <div id="hookPreview" class="text-xs sm:text-sm font-medium text-gray-200 line-clamp-2 italic bg-dark-bg/90 p-3 rounded-lg border border-brand-upwork/20 min-h-[48px] flex items-center">
-                        <span class="text-gray-500 not-italic">First 2 lines will be shown here. This is what determines if the client opens your proposal...</span>
+                    <div id="previewCard" class="text-xs italic text-slate-300 leading-relaxed font-mono bg-slate-900/50 p-3 rounded-lg border border-slate-800/80 min-h-[52px]">
+                        Proposal feed preview will appear here...
                     </div>
                 </div>
 
-                <!-- Full Editable Proposal -->
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label for="proposalOutput" class="text-xs font-bold text-gray-300">
-                            Full Proposal Text (Editable Live)
-                        </label>
-                        <div class="flex items-center space-x-3 text-[11px] text-gray-400">
-                            <span id="wordCount">0 words</span>
-                            <span>•</span>
-                            <span id="charCount">0 chars</span>
-                        </div>
+                <div class="flex-1 flex flex-col">
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="proposalText" class="text-xs font-medium text-slate-400">Full Proposal Text (Editable Live)</label>
+                        <span id="wordCount" class="text-xs text-slate-500">0 words</span>
                     </div>
-
-                    <textarea id="proposalOutput" rows="12" oninput="updateCounts()"
-                        class="w-full px-4 py-3.5 rounded-xl border border-dark-border bg-dark-input text-gray-100 text-sm font-sans focus:ring-2 focus:ring-brand-upwork focus:border-transparent outline-none transition-all resize-y leading-relaxed"
-                        placeholder="Your tailored proposal will generate here. You can edit any line directly before submitting on Upwork."></textarea>
+                    <textarea id="proposalText" class="w-full flex-1 min-h-[260px] bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-amber-500/50 transition resize-none font-sans leading-relaxed" placeholder="Generated proposal will appear here..."></textarea>
                 </div>
             </div>
-
         </div>
     </main>
 
-    <!-- API Modal -->
-    <div id="apiModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-dark-card border border-dark-border rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <div class="flex items-center justify-between border-b border-dark-border pb-3">
-                <h3 class="text-base font-bold text-white flex items-center space-x-2">
-                    <i class="fa-solid fa-key text-amber-400"></i>
-                    <span>Gemini API Key Settings</span>
+    <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-key text-emerald-400"></i> API Configuration
                 </h3>
-                <button onclick="closeApiModal()" class="text-gray-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <button id="closeSettingsBtn" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
-            
-            <p class="text-xs text-gray-300 leading-relaxed">
-                Add your Gemini API Key to enable AI reasoning. The key is stored <strong class="text-brand-upwork">only in your local browser storage</strong>.
-            </p>
-
-            <div class="space-y-2">
-                <label for="apiKeyInput" class="text-xs font-semibold text-gray-300">Google Gemini API Key</label>
-                <input type="password" id="apiKeyInput" placeholder="AIzaSy..." 
-                    class="w-full px-3.5 py-2.5 rounded-xl border border-dark-border bg-dark-input text-gray-100 text-sm focus:ring-2 focus:ring-brand-upwork outline-none">
+            <p class="text-xs text-slate-400 mb-4">Add your free Google Gemini API Key to enable advanced AI-powered dynamic job analysis.</p>
+            <div class="mb-6">
+                <label for="apiKeyInput" class="text-xs font-medium text-slate-300 block mb-2">Gemini API Key</label>
+                <input type="password" id="apiKeyInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:border-emerald-500/50 transition" placeholder="AIzaSy...">
             </div>
-
-            <div class="flex items-center justify-between pt-2">
-                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-xs text-brand-accent hover:underline flex items-center space-x-1">
-                    <span>Get free key at Google AI Studio</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                </a>
-                <div class="flex space-x-2">
-                    <button onclick="saveApiKey()" class="px-4 py-2 text-xs font-bold bg-brand-upwork hover:bg-emerald-600 text-white rounded-xl transition-all">Save Key</button>
-                </div>
+            <div class="flex justify-end gap-3">
+                <button id="saveApiKeyBtn" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition">Save Key</button>
             </div>
         </div>
     </div>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 bg-gray-900 border border-dark-border text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 text-sm font-medium transition-all duration-300 opacity-0 translate-y-8 pointer-events-none z-50">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
-        <span id="toastMsg">Copied to clipboard!</span>
-    </div>
-
     <script>
-        // Storage Keys
-        const API_KEY_STORAGE = 'upwork_winengine_gemini_key';
+        const jobDescription = document.getElementById('jobDescription');
+        const proposalText = document.getElementById('proposalText');
+        const previewCard = document.getElementById('previewCard');
+        const generateBtn = document.getElementById('generateBtn');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const btnIcon = document.getElementById('btnIcon');
+        const btnText = document.getElementById('btnText');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const wordCount = document.getElementById('wordCount');
+        const rightPanelOverlay = document.getElementById('rightPanelOverlay');
+        const generatingBadge = document.getElementById('generatingBadge');
 
-        // Init App
-        window.onload = function() {
-            checkApiKey();
-            updateCounts();
-        };
+        const settingsModal = document.getElementById('settingsModal');
+        const openSettingsBtn = document.getElementById('openSettingsBtn');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+        const apiKeyInput = document.getElementById('apiKeyInput');
 
-        function checkApiKey() {
-            const key = localStorage.getItem(API_KEY_STORAGE);
-            const badge = document.getElementById('apiKeyBadge');
-            const statusText = document.getElementById('apiKeyStatusText');
-            const modeBadge = document.getElementById('engineModeBadge');
+        let apiKey = localStorage.getItem('gemini_api_key') || '';
+        if (apiKey) apiKeyInput.value = apiKey;
 
-            if (key && key.trim().length > 5) {
-                badge.className = "w-2 h-2 rounded-full bg-emerald-400";
-                statusText.innerText = "Gemini AI Active";
-                modeBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>Gemini 3 Flash AI</span>`;
+        openSettingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
+        closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+        saveApiKeyBtn.addEventListener('click', () => {
+            apiKey = apiKeyInput.value.trim();
+            localStorage.setItem('gemini_api_key', apiKey);
+            settingsModal.classList.add('hidden');
+        });
+
+        clearBtn.addEventListener('click', () => {
+            jobDescription.value = '';
+            proposalText.value = '';
+            previewCard.innerText = 'Proposal feed preview will appear here...';
+            updateWordCount();
+        });
+
+        proposalText.addEventListener('input', () => {
+            updatePreviewSnippet();
+            updateWordCount();
+        });
+
+        function updateWordCount() {
+            const text = proposalText.value.trim();
+            const count = text ? text.split(/\s+/).length : 0;
+            wordCount.innerText = `${count} words`;
+        }
+
+        function updatePreviewSnippet() {
+            const lines = proposalText.value.trim().split('\n').filter(line => line.trim() !== '');
+            if (lines.length > 0) {
+                const firstTwo = lines.slice(0, 2).join(' ');
+                previewCard.innerText = firstTwo;
             } else {
-                badge.className = "w-2 h-2 rounded-full bg-amber-500";
-                statusText.innerText = "Set API Key (Optional)";
-                modeBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span><span>Rule Parser (Offline)</span>`;
+                previewCard.innerText = 'Proposal feed preview will appear here...';
             }
         }
 
-        function openApiModal() {
-            document.getElementById('apiKeyInput').value = localStorage.getItem(API_KEY_STORAGE) || '';
-            document.getElementById('apiModal').classList.remove('hidden');
-        }
-
-        function closeApiModal() {
-            document.getElementById('apiModal').classList.add('hidden');
-        }
-
-        function saveApiKey() {
-            const val = document.getElementById('apiKeyInput').value.trim();
-            if (val) {
-                localStorage.setItem(API_KEY_STORAGE, val);
-                showToast("Gemini API key saved!", "success");
-            } else {
-                localStorage.removeItem(API_KEY_STORAGE);
-                showToast("API key removed. Using Rule Engine.", "info");
-            }
-            checkApiKey();
-            closeApiModal();
-        }
-
-        async function pasteClipboard() {
+        function playStrongSuccessSound() {
             try {
-                const text = await navigator.clipboard.readText();
-                document.getElementById('jobDescription').value = text;
-                showToast("Pasted from clipboard!", "success");
-            } catch (err) {
-                showToast("Click inside textarea to paste manually", "info");
-            }
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Play a rich 3-note ascending commercial chime
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, index) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + (index * 0.08));
+                    
+                    gain.gain.setValueAtTime(0, ctx.currentTime + (index * 0.08));
+                    gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + (index * 0.08) + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (index * 0.08) + 0.4);
+                    
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    
+                    osc.start(ctx.currentTime + (index * 0.08));
+                    osc.stop(ctx.currentTime + (index * 0.08) + 0.4);
+                });
+            } catch (e) {}
         }
 
-        function toggleTheme() {
-            document.documentElement.classList.toggle('dark');
-        }
+        generateBtn.addEventListener('click', async () => {
+            const input = jobDescription.value.trim();
+            if (!input) return;
 
-        async function handleGenerate() {
-            const jobText = document.getElementById('jobDescription').value.trim();
-            if (!jobText) {
-                showToast("Please paste a job description first", "info");
-                return;
-            }
-
-            const apiKey = localStorage.getItem(API_KEY_STORAGE);
             setLoading(true);
 
-            try {
-                let proposalText = "";
-                if (apiKey && apiKey.trim().length > 5) {
-                    proposalText = await generateWithGemini(jobText, apiKey);
-                } else {
-                    proposalText = generateWithNLP(jobText);
+            let result = '';
+            if (apiKey) {
+                try {
+                    result = await generateWithGemini(input);
+                } catch (err) {
+                    result = fallbackUniversalGenerator(input);
                 }
+            } else {
+                await new Promise(r => setTimeout(r, 800));
+                result = fallbackUniversalGenerator(input);
+            }
 
-                document.getElementById('proposalOutput').value = proposalText;
-                
-                // Extract first 2 lines for feed preview
-                const lines = proposalText.split('\n').filter(l => l.trim().length > 0);
-                const firstTwo = lines.slice(0, 2).join(' ');
-                document.getElementById('hookPreview').innerText = firstTwo;
-                document.getElementById('hookQuality').innerText = "Live Dashboard Preview";
-                document.getElementById('hookQuality').className = "text-[10px] font-bold text-emerald-400";
+            proposalText.value = result;
+            updatePreviewSnippet();
+            updateWordCount();
+            setLoading(false);
+            playStrongSuccessSound();
+        });
 
-                enableCopyButton();
-                updateCounts();
-                showToast("Proposal generated successfully!", "success");
-
-            } catch (err) {
-                console.error("AI Generation error, falling back to NLP:", err);
-                showToast("API error. Used high-precision fallback engine.", "info");
-                const fallbackText = generateWithNLP(jobText);
-                document.getElementById('proposalOutput').value = fallbackText;
-                const lines = fallbackText.split('\n').filter(l => l.trim().length > 0);
-                document.getElementById('hookPreview').innerText = lines.slice(0, 2).join(' ');
-                enableCopyButton();
-                updateCounts();
-            } finally {
-                setLoading(false);
+        function setLoading(isLoading) {
+            if (isLoading) {
+                generateBtn.disabled = true;
+                btnSpinner.classList.remove('hidden');
+                btnIcon.classList.add('hidden');
+                btnText.innerText = 'Analyzing Job Post...';
+                rightPanelOverlay.classList.remove('hidden');
+                rightPanelOverlay.classList.add('flex');
+                generatingBadge.classList.remove('hidden');
+                generatingBadge.classList.add('flex');
+            } else {
+                generateBtn.disabled = false;
+                btnSpinner.classList.add('hidden');
+                btnIcon.classList.remove('hidden');
+                btnText.innerText = 'Generate Winning Proposal';
+                rightPanelOverlay.classList.add('hidden');
+                rightPanelOverlay.classList.remove('flex');
+                generatingBadge.classList.add('hidden');
+                generatingBadge.classList.remove('flex');
             }
         }
 
-        // --- GEMINI API CALL ---
-        async function generateWithGemini(jobText, apiKey) {
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+        async function generateWithGemini(promptText) {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            const systemInstruction = `You are an elite Upwork proposal writer. Follow this strict 3-Rule formula for ANY job description provided:
+Rule 1 (First 2 Lines Hook): Start immediately by mirroring the client's exact problem or project goal in sentence #1. Prove instantly that you read and understood their exact post word-for-word (no greetings, no "Dear Hiring Manager", no generic intros).
+Rule 2 (3-Step Action Roadmap): Break down the exact execution plan into 3 simple, concrete, professional steps tailored specifically to their timeline and requirements using easy, natural words.
+Rule 3 (Closing Diagnostic Question): End with 1 direct, thoughtful question about their setup or requirement to spark an immediate chat conversation.
 
-            const systemPrompt = `You are a top 1% Upwork freelancer who writes short, high-converting proposals.
-Strictly adhere to the 3-Rule Upwork Proposal Formula:
-Rule 1 (First 2 Lines Hook): Mirror the client's specific technical/business problem in line #1 with absolute domain specificity (e.g. mention exact host names like HostGator, specific cron persistence, database malware, or exact framework issues). NEVER start with generic sentences like "I read your job post", "Your requirement to focus on...", or "I am an expert".
-Rule 2 (3-Step Roadmap): Provide 3 concrete, realistic execution steps tailored directly to their issue.
-Rule 3 (Diagnostic Question): End with 1 sharp, direct technical question to open immediate chat.
-
-Strict rules:
-- Maximum length: 110-140 words.
-- NO fluff, NO pleasantries, NO intro fluff.
-- BANNED WORDS: delve, thrilled, leverage, crucial, elevate, transform, expert, bespoke, seamless, cutting-edge.
-- Write like a senior engineer/specialist talking directly to a client on Slack.`;
+Strict Guardrails:
+- Use clear, professional, everyday English words (no heavy corporate jargon).
+- Absolute zero AI fluff words: DO NOT use "delve", "transform", "leverage", "thrilled", "pleasure", "expert", "crucial", "testament", "beacon".
+- Output only the proposal text ready to copy-paste.`;
 
             const payload = {
                 contents: [{
-                    parts: [{ text: `Job Description:\n"""\n${jobText}\n"""\n\nWrite a winning proposal now:` }]
-                }],
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                }
+                    parts: [{ text: `${systemInstruction}\n\nClient Job Description:\n${promptText}` }]
+                }]
             };
 
-            const response = await fetch(apiUrl, {
+            const resp = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            if (!response.ok) {
-                throw new Error(`API response status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (!text) throw new Error("Empty response from Gemini");
-
-            return text.trim();
+            const data = await resp.json();
+            return data.candidates[0].content.parts[0].text.trim();
         }
 
-        // --- ADVANCED LOCAL NLP ENGINE (FALLBACK) ---
-        function generateWithNLP(raw) {
-            const text = raw.toLowerCase();
-            
-            // Entity Extraction
-            const isMalware = text.includes('malware') || text.includes('hack') || text.includes('backdoor') || text.includes('virus') || text.includes('infected') || text.includes('regenerat');
-            const isWordPress = text.includes('wordpress') || text.includes('wp') || text.includes('subdomain') || text.includes('hostgator') || text.includes('cpanel');
-            const isHostgator = text.includes('hostgator') || text.includes('bluehost') || text.includes('godaddy');
-            const isSpeed = text.includes('speed') || text.includes('slow') || text.includes('load') || text.includes('gtmetrix') || text.includes('lighthouse');
-            const isReactNext = text.includes('react') || text.includes('next') || text.includes('vue') || text.includes('tailwind');
+        function fallbackUniversalGenerator(text) {
+            const cleanText = text.replace(/\s+/g, ' ').trim();
+            let summarySnippet = cleanText.length > 90 ? cleanText.substring(0, 90) + '...' : cleanText;
 
-            // Hook Generation (Rule 1)
-            let hook = "";
-            if (isMalware && isWordPress) {
-                const host = isHostgator ? "HostGator shared server cron jobs or hidden backdoor scripts in wp-config/uploads" : "hidden cron tasks or persistent SQL injection backdoors";
-                hook = `Re-appearing WordPress malware on shared hosting usually stems from ${host} re-injecting payload files even after folder deletion.\nSimply deleting directory folders manually won't clean the infection because the background persistence trigger stays active.`;
-            } else if (isSpeed) {
-                hook = `Fixing slow page rendering requires eliminating unoptimized database queries and render-blocking assets, not just installing generic caching plugins.\nI can systematically reduce your LCP and TBT load metrics down to target benchmarks.`;
-            } else if (isReactNext) {
-                hook = `Your frontend layout and state issues look like a component re-rendering or lifecycle state bottleneck.\nI can clean up the build dependencies and refactor the interface without breaking existing features.`;
-            } else {
-                hook = `Solving this requires tracing the exact execution path rather than applying surface-level patches.\nI specialize in resolving complex technical bottlenecks without guesswork.`;
+            let hook = `Your requirement to ${summarySnippet.toLowerCase()} is clear, and I can step in immediately to handle this without any trial-and-error.`;
+            let step1 = "1. Review your current setup and isolate the exact requirements or bottlenecks.";
+            let step2 = "2. Execute the necessary implementation cleanly and test thoroughly for stable performance.";
+            let step3 = "3. Complete final verification and provide clear handover details.";
+            let question = "What is your target timeline for getting this completed?";
+
+            const lower = text.toLowerCase();
+            if (lower.includes('speed') || lower.includes('slow') || lower.includes('performance') || lower.includes('optimize')) {
+                hook = `Fixing the loading speed and performance bottlenecks on your setup is straightforward, and I can get your site running fast without breaking any functionality.`;
+                step1 = "1. Run a deep performance and resource audit to identify unoptimized assets and database queries.";
+                step2 = "2. Clean up bloat, configure caching, and optimize scripts to achieve high score results.";
+                step3 = "3. Verify mobile and desktop responsiveness to ensure consistent fast loading.";
+                question = "Are you currently using Cloudflare or any specific caching plugins?";
+            } else if (lower.includes('fix') || lower.includes('bug') || lower.includes('error') || lower.includes('issue')) {
+                hook = `Tracking down and resolving this specific error on your project is something I handle regularly without wasting time.`;
+                step1 = "1. Reproduce and isolate the exact failure point in your codebase or environment.";
+                step2 = "2. Apply a clean and robust patch to permanently resolve the error.";
+                step3 = "3. Run comprehensive tests to ensure everything operates smoothly.";
+                question = "Can you share any specific error logs or steps to trigger the issue?";
+            } else if (lower.includes('wordpress') || lower.includes('elementor') || lower.includes('plugin') || lower.includes('site')) {
+                hook = `Building and optimizing your WordPress and Elementor requirements is right in my wheelhouse, ensuring clean structure and fast performance.`;
+                step1 = "1. Review your site structure and map out the exact layout or functional updates needed.";
+                step2 = "2. Build and configure the pages or features with clean styling and mobile responsiveness.";
+                step3 = "3. Test all interactions and finalize the setup for launch.";
+                question = "Do you have any specific design references or plugin requirements in mind?";
             }
 
-            // Roadmap Generation (Rule 2)
-            let step1 = "", step2 = "", step3 = "";
-
-            if (isMalware) {
-                step1 = "Isolate the root hosting environment and audit active cron jobs, process lists, and database tables for persistence triggers.";
-                step2 = "Purge all core backdoor scripts, clean infected site files, and safely remove the requested unused directories without breaking site dependencies.";
-                step3 = "Harden file permissions, update security keys, and configure active firewall rules to guarantee zero self-replication.";
-            } else if (isSpeed) {
-                step1 = "Audit network payloads, DOM size, and server response times (TTFB) to isolate bottlenecks.";
-                step2 = "Optimize asset loading, defer non-critical JS/CSS, and configure object caching.";
-                step3 = "Run cross-device speed benchmarks and deliver full verification reports.";
-            } else {
-                step1 = "Review current codebase architecture and log outputs to locate the precise failure point.";
-                step2 = "Implement modular fixes and test state behavior in an isolated staging environment.";
-                step3 = "Deploy the update to production cleanly with roll-back safety measures.";
-            }
-
-            const roadmap = `Here is how I will tackle this:\n1. ${step1}\n2. ${step2}\n3. ${step3}`;
-
-            // Diagnostic Question (Rule 3)
-            let question = "";
-            if (isMalware && isWordPress) {
-                question = "Do you have cPanel/SSH access ready so I can inspect the active process tree and cron schedules immediately?";
-            } else if (isSpeed) {
-                question = "What target load time score are you aiming for on Mobile versus Desktop?";
-            } else {
-                question = "Do you have a staging site ready, or should I work directly on a local clone branch?";
-            }
-
-            return `${hook}\n\n${roadmap}\n\n${question}\n\nBest regards,`;
+            return `${hook}\n\nHere is how I will approach this for you:\n${step1}\n${step2}\n${step3}\n\n${question}`;
         }
 
-        function setLoading(isLoading) {
-            const btn = document.getElementById('generateBtn');
-            const btnText = document.getElementById('btnText');
-            if (isLoading) {
-                btn.disabled = true;
-                btn.classList.add('opacity-80', 'cursor-wait');
-                btnText.innerText = "Analyzing & Crafting Pitch...";
-            } else {
-                btn.disabled = false;
-                btn.classList.remove('opacity-80', 'cursor-wait');
-                btnText.innerText = "Generate Winning Proposal";
-            }
-        }
-
-        function enableCopyButton() {
-            const btn = document.getElementById('copyBtn');
-            btn.disabled = false;
-            btn.className = "px-4 py-2 text-xs font-semibold bg-brand-upwork hover:bg-emerald-600 text-white rounded-xl shadow-md cursor-pointer transition-all flex items-center space-x-2";
-        }
-
-        function copyProposal() {
-            const text = document.getElementById('proposalOutput').value;
-            if (!text) return;
-
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                showToast("Proposal copied to clipboard!", "success");
-            } catch (err) {
-                showToast("Failed to copy text", "error");
-            }
-            document.body.removeChild(textarea);
-        }
-
-        function updateCounts() {
-            const text = document.getElementById('proposalOutput').value.trim();
-            const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
-            const chars = text.length;
-            document.getElementById('wordCount').innerText = `${words} words`;
-            document.getElementById('charCount').innerText = `${chars} chars`;
-        }
-
-        function showToast(msg, type = "success") {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            const toastIcon = document.getElementById('toastIcon');
-
-            toastMsg.innerText = msg;
-            if (type === "error") {
-                toastIcon.className = "fa-solid fa-triangle-exclamation text-red-400 text-base";
-            } else if (type === "info") {
-                toastIcon.className = "fa-solid fa-circle-info text-amber-400 text-base";
-            } else {
-                toastIcon.className = "fa-solid fa-circle-check text-emerald-400 text-base";
-            }
-
-            toast.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
-            toast.classList.add('opacity-100', 'translate-y-0');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
-            }, 2600);
-        }
+        copyBtn.addEventListener('click', () => {
+            if (!proposalText.value) return;
+            navigator.clipboard.writeText(proposalText.value);
+            const original = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+            setTimeout(() => copyBtn.innerHTML = original, 2000);
+        });
     </script>
 </body>
 </html>
