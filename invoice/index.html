@@ -238,7 +238,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            font-size: 13px;
+            font-size: 23px;
             line-height: 1.45;
         }
 
@@ -253,7 +253,7 @@
         }
 
         .invoice-title {
-            font-size: 30px;
+            font-size: 38px;
             font-weight: 400;
             color: #000000;
             margin-bottom: 6px;
@@ -261,7 +261,7 @@
         }
 
         .invoice-meta {
-            font-size: 13px;
+            font-size: 20px;
             color: #555555;
         }
 
@@ -279,7 +279,7 @@
         }
 
         .party-block h4 {
-            font-size: 14px;
+            font-size: 24px;
             font-weight: 700;
             margin-bottom: 8px;
             color: #000000;
@@ -288,7 +288,7 @@
         .party-content {
             white-space: pre-line;
             color: #1a1a1a;
-            font-size: 13px;
+            font-size: 20px;
             line-height: 1.5;
         }
 
@@ -307,7 +307,7 @@
             font-weight: 700;
             text-align: left;
             padding: 10px 14px;
-            font-size: 13px;
+            font-size: 20px;
         }
 
         .products-table th:first-child {
@@ -331,7 +331,7 @@
         .products-table td {
             padding: 14px;
             border-bottom: 1px solid var(--border-light);
-            font-size: 13px;
+            font-size: 20px;
             color: #000000;
         }
 
@@ -347,7 +347,7 @@
         }
 
         .summary-box {
-            width: 270px;
+            width: 380px;
         }
 
         .summary-header {
@@ -359,7 +359,7 @@
             justify-content: space-between;
             gap: 12px;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 21px;
             color: #374151;
         }
 
@@ -367,25 +367,25 @@
             display: flex;
             align-items: flex-end;
             gap: 2.5px;
-            height: 22px;
+            height: 26px;
             border-bottom: 2.5px solid #475569;
             padding-bottom: 1px;
         }
 
         .summary-header-icon .bar {
             background-color: #475569;
-            width: 4px;
+            width: 5px;
             border-radius: 1px;
         }
 
-        .summary-header-icon .bar-1 { height: 10px; }
-        .summary-header-icon .bar-2 { height: 18px; }
-        .summary-header-icon .bar-3 { height: 13px; }
+        .summary-header-icon .bar-1 { height: 12px; }
+        .summary-header-icon .bar-2 { height: 21px; }
+        .summary-header-icon .bar-3 { height: 15px; }
 
         .summary-header-text {
             flex: 1;
             text-align: right;
-            font-size: 15px;
+            font-size: 21px;
             font-weight: 700;
             color: #374151;
         }
@@ -398,7 +398,7 @@
 
         .summary-table td {
             padding: 6px 10px;
-            font-size: 13px;
+            font-size: 20px;
             color: #1a1a1a;
         }
 
@@ -416,7 +416,7 @@
         .pdf-footer {
             margin-top: auto;
             text-align: right;
-            font-size: 11px;
+            font-size: 18px;
             color: #6b7280;
             padding-top: 20px;
         }
@@ -475,7 +475,7 @@
                     <h3>Invoice Details</h3>
                     <div class="form-group">
                         <label>Invoice Number</label>
-                        <input type="text" id="inputNumber" value="0006">
+                        <input type="text" id="inputNumber" value="0007">
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -507,13 +507,13 @@ razuahammad55@gmail.com
                     </div>
                     <div class="form-group">
                         <label>To (Recipient)</label>
-                        <textarea id="inputTo">Stavrianou Pelagia Eleftheria
+                        <textarea id="inputTo">Jennifer Mitchell
 Marketing and Consultancy Services
-Chatzikonstanti 22, Psichiko, 15452
-Tax Number: EL125141664
-Tax Office: KEFODE ATTIKIS
-p-stavrianou@hotmail.com
-Tel: +30 6979186608</textarea>
+1250 Market Street, San Francisco, CA 94103, USA
+Tax Number: 12-3456789 (Fictional EIN)
+Tax Office: IRS
+jennifer.mitchell@example.com
+Tel: +1 202-555-0147</textarea>
                     </div>
                 </div>
 
@@ -535,7 +535,7 @@ Tel: +30 6979186608</textarea>
             </div>
 
             <div class="sidebar-footer">
-                <button class="btn-primary" onclick="window.print()">
+                <button class="btn-primary" onclick="handlePrintInvoice()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 6 2 18 2 18 9"></polyline>
                         <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -553,7 +553,7 @@ Tel: +30 6979186608</textarea>
                     <!-- Document Top Header -->
                     <div class="pdf-header">
                         <div class="invoice-title-block">
-                            <div class="invoice-title">Invoice: <span id="viewNumber">0006</span></div>
+                            <div class="invoice-title">Invoice: <span id="viewNumber">0007</span></div>
                             <div class="invoice-meta">
                                 <div>Issued on: <span id="viewIssued"></span></div>
                                 <div>Due by: <span id="viewDue"></span></div>
@@ -672,9 +672,9 @@ Tel: +30 6979186608</textarea>
             }
         });
 
-        // Default Line Items
+        // Default Line Items (Replaced with English to Italian Translation = 999 or equivalent)
         let items = [
-            { id: 1, title: 'English to Italian Translation', quantity: 1, price: 200.00 }
+            { id: 1, title: 'English to Italian Translation', quantity: 1, price: 999.00 }
         ];
 
         // Input References
@@ -787,6 +787,22 @@ Tel: +30 6979186608</textarea>
             viewSubtotal.textContent = `${currency} ${subtotal.toFixed(2)}`;
             viewTax.textContent = `${currency} ${taxVal.toFixed(2)}`;
             viewTotal.textContent = `${currency} ${grandTotal.toFixed(2)}`;
+        }
+
+        // Auto-increment invoice number on print / save click
+        function handlePrintInvoice() {
+            window.print();
+
+            // Increment invoice number logic (+1)
+            let currentVal = inputNumber.value.trim();
+            // Check if it's numeric
+            if (!isNaN(currentVal) && currentVal !== '') {
+                let nextNum = parseInt(currentVal, 10) + 1;
+                // Preserve leading zeros (e.g. 0007 -> 0008)
+                let paddedNum = String(nextNum).padStart(currentVal.length, '0');
+                inputNumber.value = paddedNum;
+                viewNumber.textContent = paddedNum;
+            }
         }
 
         // Initialize First View
