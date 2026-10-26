@@ -117,7 +117,6 @@
         }
 
         input[type="text"],
-        input[type="date"],
         input[type="number"],
         textarea {
             width: 100%;
@@ -479,12 +478,12 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Issued Date</label>
-                            <input type="date" id="inputIssued">
+                            <label>Issued Date (DD/MM/YYYY)</label>
+                            <input type="text" id="inputIssued" placeholder="DD/MM/YYYY">
                         </div>
                         <div class="form-group">
-                            <label>Due Date</label>
-                            <input type="date" id="inputDue">
+                            <label>Due Date (DD/MM/YYYY)</label>
+                            <input type="text" id="inputDue" placeholder="DD/MM/YYYY">
                         </div>
                     </div>
                     <div class="form-group">
@@ -633,15 +632,23 @@ Tel: +1 202-555-0147</textarea>
             return `${day}/${month}/${year}`;
         }
 
-        // Helper to format date for input value (YYYY-MM-DD)
-        function formatInputValue(dateObj) {
-            const day = String(dateObj.getDate()).padStart(2, '0');
-            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const year = dateObj.getFullYear();
-            return `${year}-${month}-${day}`;
+        // Persistent Invoice Number using localStorage
+        const STORAGE_KEY = 'razu_invoice_last_number';
+        let initialInvoiceNum = '0007';
+
+        if (localStorage.getItem(STORAGE_KEY)) {
+            initialInvoiceNum = localStorage.getItem(STORAGE_KEY);
+        } else {
+            localStorage.setItem(STORAGE_KEY, '0007');
         }
 
-        // Initialize Dates (Current Date & 7 days later)
+        const inputNumber = document.getElementById('inputNumber');
+        const viewNumber = document.getElementById('viewNumber');
+        
+        inputNumber.value = initialInvoiceNum;
+        viewNumber.textContent = initialInvoiceNum;
+
+        // Initialize Dates (Current Date & 7 days later in DD/MM/YYYY)
         const today = new Date();
         const nextWeek = new Date();
         nextWeek.setDate(today.getDate() + 7);
@@ -651,34 +658,30 @@ Tel: +1 202-555-0147</textarea>
         const viewIssued = document.getElementById('viewIssued');
         const viewDue = document.getElementById('viewDue');
 
-        inputIssued.value = formatInputValue(today);
-        inputDue.value = formatInputValue(nextWeek);
+        const formattedToday = formatDate(today);
+        const formattedNextWeek = formatDate(nextWeek);
 
-        viewIssued.textContent = formatDate(today);
-        viewDue.textContent = formatDate(nextWeek);
+        inputIssued.value = formattedToday;
+        inputDue.value = formattedNextWeek;
 
-        // Update view dates when inputs change manually
+        viewIssued.textContent = formattedToday;
+        viewDue.textContent = formattedNextWeek;
+
+        // Update view dates when text inputs change manually
         inputIssued.addEventListener('input', e => {
-            if (e.target.value) {
-                const parts = e.target.value.split('-');
-                viewIssued.textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
+            viewIssued.textContent = e.target.value;
         });
 
         inputDue.addEventListener('input', e => {
-            if (e.target.value) {
-                const parts = e.target.value.split('-');
-                viewDue.textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
+            viewDue.textContent = e.target.value;
         });
 
-        // Default Line Items
+        // Default Line Items updated to "Complete WordPress Website" at 999.00
         let items = [
-            { id: 1, title: 'English to Italian Translation', quantity: 1, price: 999.00 }
+            { id: 1, title: 'Complete WordPress Website', quantity: 1, price: 999.00 }
         ];
 
         // Input References
-        const inputNumber = document.getElementById('inputNumber');
         const inputCurrency = document.getElementById('inputCurrency');
         const inputFrom = document.getElementById('inputFrom');
         const inputTo = document.getElementById('inputTo');
@@ -687,7 +690,6 @@ Tel: +1 202-555-0147</textarea>
         const btnAddItem = document.getElementById('btnAddItem');
 
         // View References
-        const viewNumber = document.getElementById('viewNumber');
         const viewFrom = document.getElementById('viewFrom');
         const viewTo = document.getElementById('viewTo');
         const viewTableBody = document.getElementById('viewTableBody');
@@ -696,7 +698,11 @@ Tel: +1 202-555-0147</textarea>
         const viewTotal = document.getElementById('viewTotal');
 
         // Bind Live Syncing
-        inputNumber.addEventListener('input', e => viewNumber.textContent = e.target.value);
+        inputNumber.addEventListener('input', e => {
+            viewNumber.textContent = e.target.value;
+            localStorage.setItem(STORAGE_KEY, e.target.value);
+        });
+
         inputFrom.addEventListener('input', e => viewFrom.textContent = e.target.value);
         inputTo.addEventListener('input', e => viewTo.textContent = e.target.value);
         
@@ -789,7 +795,7 @@ Tel: +1 202-555-0147</textarea>
             viewTotal.textContent = `${currency} ${grandTotal.toFixed(2)}`;
         }
 
-        // Auto-increment invoice number on print / save click
+        // Auto-increment invoice number on print / save click & persist via localStorage
         function handlePrintInvoice() {
             window.print();
 
@@ -799,6 +805,7 @@ Tel: +1 202-555-0147</textarea>
                 let paddedNum = String(nextNum).padStart(currentVal.length, '0');
                 inputNumber.value = paddedNum;
                 viewNumber.textContent = paddedNum;
+                localStorage.setItem(STORAGE_KEY, paddedNum);
             }
         }
 
