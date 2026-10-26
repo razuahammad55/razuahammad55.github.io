@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upwork WinEngine - Dynamic 3-Rule Pitch Generator</title>
+    <title>Upwork WinEngine - Dynamic Custom Pitch Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -27,11 +27,12 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold text-white tracking-wide">Upwork WinEngine</h1>
-                    <p class="text-xs text-slate-400">Dynamic 3-Rule Pitch Generator</p>
+                    <p class="text-xs text-slate-400">Dynamic Custom Pitch Generator</p>
                 </div>
             </div>
-            <button id="openSettingsBtn" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition">
+            <button id="openSettingsBtn" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition flex items-center gap-2">
                 <i class="fa-solid fa-gear text-lg"></i>
+                <span id="apiKeyStatusIndicator" class="w-2 h-2 rounded-full bg-rose-500" title="API Key Required"></span>
             </button>
         </div>
     </header>
@@ -45,9 +46,9 @@
                     </label>
                     <button id="clearBtn" class="text-xs text-slate-400 hover:text-slate-200 transition">Clear</button>
                 </div>
-                <p class="text-xs text-slate-400 mb-3">Paste any job posting snippet. The engine dynamically analyzes the core problem, tech stack, and goals to build a tailored proposal.</p>
+                <p class="text-xs text-slate-400 mb-3">Paste the full job post, including client name, budget mentions, or special instructions. The engine reads every detail.</p>
                 
-                <textarea id="jobDescription" class="w-full flex-1 min-h-[360px] bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-emerald-500/50 transition resize-none placeholder-slate-600 mb-6" placeholder="Paste the job description here..."></textarea>
+                <textarea id="jobDescription" class="w-full flex-1 min-h-[360px] bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-emerald-500/50 transition resize-none placeholder-slate-600 mb-6" placeholder="Paste job description and client details here..."></textarea>
                 
                 <button id="generateBtn" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-emerald-500/10 transition flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed">
                     <i id="btnSpinner" class="fa-solid fa-spinner fa-spin hidden"></i>
@@ -61,7 +62,7 @@
                     <div class="w-12 h-12 rounded-full border-2 border-emerald-500/20 border-t-emerald-400 animate-spin flex items-center justify-center text-emerald-400">
                         <i class="fa-solid fa-scissors text-sm"></i>
                     </div>
-                    <span class="text-sm font-medium text-emerald-400 animate-pulse">Generating tailored proposal...</span>
+                    <span class="text-sm font-medium text-emerald-400 animate-pulse">Deep reading job details...</span>
                 </div>
 
                 <div class="flex items-center justify-between mb-4">
@@ -78,7 +79,7 @@
                     </button>
                 </div>
                 
-                <p class="text-xs text-slate-400 mb-4">Professional, easy words, zero AI fluff, and fully custom-tailored</p>
+                <p class="text-xs text-slate-400 mb-4">Strictly customized to client name, unique specs, and zero fluff</p>
 
                 <div class="mb-6 bg-slate-950/60 border border-slate-800 rounded-xl p-4 relative overflow-hidden">
                     <div class="flex items-center justify-between mb-2">
@@ -107,13 +108,13 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-key text-emerald-400"></i> API Configuration
+                    <i class="fa-solid fa-key text-emerald-400"></i> API Configuration Required
                 </h3>
                 <button id="closeSettingsBtn" class="text-slate-400 hover:text-white transition">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <p class="text-xs text-slate-400 mb-4">Add your free Google Gemini API Key to enable advanced AI-powered dynamic job analysis.</p>
+            <p class="text-xs text-slate-400 mb-4">Please enter your Google Gemini API Key. The application requires an active API key to generate custom proposals.</p>
             <div class="mb-6">
                 <label for="apiKeyInput" class="text-xs font-medium text-slate-300 block mb-2">Gemini API Key</label>
                 <input type="password" id="apiKeyInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:border-emerald-500/50 transition" placeholder="AIzaSy...">
@@ -137,6 +138,7 @@
         const wordCount = document.getElementById('wordCount');
         const rightPanelOverlay = document.getElementById('rightPanelOverlay');
         const generatingBadge = document.getElementById('generatingBadge');
+        const apiKeyStatusIndicator = document.getElementById('apiKeyStatusIndicator');
 
         const settingsModal = document.getElementById('settingsModal');
         const openSettingsBtn = document.getElementById('openSettingsBtn');
@@ -145,13 +147,42 @@
         const apiKeyInput = document.getElementById('apiKeyInput');
 
         let apiKey = localStorage.getItem('gemini_api_key') || '';
-        if (apiKey) apiKeyInput.value = apiKey;
+        if (apiKey) {
+            apiKeyInput.value = apiKey;
+            updateApiKeyStatus(true);
+        } else {
+            updateApiKeyStatus(false);
+            // Open settings on first load if no key exists
+            setTimeout(() => settingsModal.classList.remove('hidden'), 400);
+        }
+
+        function updateApiKeyStatus(hasKey) {
+            if (hasKey) {
+                apiKeyStatusIndicator.className = 'w-2 h-2 rounded-full bg-emerald-500';
+                apiKeyStatusIndicator.title = 'API Key Active';
+            } else {
+                apiKeyStatusIndicator.className = 'w-2 h-2 rounded-full bg-rose-500';
+                apiKeyStatusIndicator.title = 'API Key Required';
+            }
+        }
 
         openSettingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
-        closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+        closeSettingsBtn.addEventListener('click', () => {
+            if (!apiKey) {
+                alert('An API key is required to use this application.');
+                return;
+            }
+            settingsModal.classList.add('hidden');
+        });
+
         saveApiKeyBtn.addEventListener('click', () => {
             apiKey = apiKeyInput.value.trim();
+            if (!apiKey) {
+                alert('Please enter a valid API key.');
+                return;
+            }
             localStorage.setItem('gemini_api_key', apiKey);
+            updateApiKeyStatus(true);
             settingsModal.classList.add('hidden');
         });
 
@@ -186,23 +217,17 @@
         function playStrongSuccessSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Play a rich 3-note ascending commercial chime
-                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                const notes = [523.25, 659.25, 783.99, 1046.50];
                 notes.forEach((freq, index) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
-                    
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(freq, ctx.currentTime + (index * 0.08));
-                    
                     gain.gain.setValueAtTime(0, ctx.currentTime + (index * 0.08));
                     gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + (index * 0.08) + 0.02);
                     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (index * 0.08) + 0.4);
-                    
                     osc.connect(gain);
                     gain.connect(ctx.destination);
-                    
                     osc.start(ctx.currentTime + (index * 0.08));
                     osc.stop(ctx.currentTime + (index * 0.08) + 0.4);
                 });
@@ -213,25 +238,25 @@
             const input = jobDescription.value.trim();
             if (!input) return;
 
-            setLoading(true);
-
-            let result = '';
-            if (apiKey) {
-                try {
-                    result = await generateWithGemini(input);
-                } catch (err) {
-                    result = fallbackUniversalGenerator(input);
-                }
-            } else {
-                await new Promise(r => setTimeout(r, 800));
-                result = fallbackUniversalGenerator(input);
+            if (!apiKey) {
+                settingsModal.classList.remove('hidden');
+                alert('Please enter your Gemini API key in settings first.');
+                return;
             }
 
-            proposalText.value = result;
-            updatePreviewSnippet();
-            updateWordCount();
-            setLoading(false);
-            playStrongSuccessSound();
+            setLoading(true);
+
+            try {
+                const result = await generateWithGemini(input);
+                proposalText.value = result;
+                updatePreviewSnippet();
+                updateWordCount();
+                setLoading(false);
+                playStrongSuccessSound();
+            } catch (err) {
+                setLoading(false);
+                alert('Error generating proposal. Please verify your API key and check console logs.');
+            }
         });
 
         function setLoading(isLoading) {
@@ -239,7 +264,7 @@
                 generateBtn.disabled = true;
                 btnSpinner.classList.remove('hidden');
                 btnIcon.classList.add('hidden');
-                btnText.innerText = 'Analyzing Job Post...';
+                btnText.innerText = 'Deep Reading Job Post...';
                 rightPanelOverlay.classList.remove('hidden');
                 rightPanelOverlay.classList.add('flex');
                 generatingBadge.classList.remove('hidden');
@@ -258,19 +283,23 @@
 
         async function generateWithGemini(promptText) {
             const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-            const systemInstruction = `You are an elite Upwork proposal writer. Follow this strict 3-Rule formula for ANY job description provided:
-Rule 1 (First 2 Lines Hook): Start immediately by mirroring the client's exact problem or project goal in sentence #1. Prove instantly that you read and understood their exact post word-for-word (no greetings, no "Dear Hiring Manager", no generic intros).
-Rule 2 (3-Step Action Roadmap): Break down the exact execution plan into 3 simple, concrete, professional steps tailored specifically to their timeline and requirements using easy, natural words.
-Rule 3 (Closing Diagnostic Question): End with 1 direct, thoughtful question about their setup or requirement to spark an immediate chat conversation.
+            const systemInstruction = `You are an elite, highly observant Upwork freelancer proposal writer. 
+Carefully read every line of the provided job description. 
+- Look for the client's name (e.g. "Hi, I am John" or client name mentions) and use it naturally if available (e.g. "Hi [Name]," or addressing them directly).
+- Look for unique constraints, tech stacks, or special requirements mentioned in the post and explicitly address them word-for-word.
+- DO NOT use a rigid or generic 3-step list if the job requires something different. Adapt your proposal structure dynamically to match what this specific client needs (whether it's a technical audit, custom development, bug fixing, or ongoing tasks).
+- Rule 1 (First 2 Lines Hook): Start immediately by mirroring their exact problem or objective in sentence #1 so they instantly know you read their post word-for-word. No generic fluff.
+- Rule 2 (Custom Action Plan): Provide a clear, practical, tailored execution approach using easy, natural words.
+- Rule 3 (Closing Diagnostic Question): End with 1 direct, smart question about their setup to spark an immediate chat reply.
 
 Strict Guardrails:
-- Use clear, professional, everyday English words (no heavy corporate jargon).
-- Absolute zero AI fluff words: DO NOT use "delve", "transform", "leverage", "thrilled", "pleasure", "expert", "crucial", "testament", "beacon".
-- Output only the proposal text ready to copy-paste.`;
+- Clear, professional, everyday English words.
+- Absolute zero AI fluff words: DO NOT use "delve", "transform", "leverage", "thrilled", "pleasure", "expert", "crucial", "testament".
+- Output only the plain text proposal ready to send.`;
 
             const payload = {
                 contents: [{
-                    parts: [{ text: `${systemInstruction}\n\nClient Job Description:\n${promptText}` }]
+                    parts: [{ text: `${systemInstruction}\n\nClient Job Description / Details:\n${promptText}` }]
                 }]
             };
 
@@ -280,42 +309,12 @@ Strict Guardrails:
                 body: JSON.stringify(payload)
             });
 
-            const data = await resp.json();
-            return data.candidates[0].content.parts[0].text.trim();
-        }
-
-        function fallbackUniversalGenerator(text) {
-            const cleanText = text.replace(/\s+/g, ' ').trim();
-            let summarySnippet = cleanText.length > 90 ? cleanText.substring(0, 90) + '...' : cleanText;
-
-            let hook = `Your requirement to ${summarySnippet.toLowerCase()} is clear, and I can step in immediately to handle this without any trial-and-error.`;
-            let step1 = "1. Review your current setup and isolate the exact requirements or bottlenecks.";
-            let step2 = "2. Execute the necessary implementation cleanly and test thoroughly for stable performance.";
-            let step3 = "3. Complete final verification and provide clear handover details.";
-            let question = "What is your target timeline for getting this completed?";
-
-            const lower = text.toLowerCase();
-            if (lower.includes('speed') || lower.includes('slow') || lower.includes('performance') || lower.includes('optimize')) {
-                hook = `Fixing the loading speed and performance bottlenecks on your setup is straightforward, and I can get your site running fast without breaking any functionality.`;
-                step1 = "1. Run a deep performance and resource audit to identify unoptimized assets and database queries.";
-                step2 = "2. Clean up bloat, configure caching, and optimize scripts to achieve high score results.";
-                step3 = "3. Verify mobile and desktop responsiveness to ensure consistent fast loading.";
-                question = "Are you currently using Cloudflare or any specific caching plugins?";
-            } else if (lower.includes('fix') || lower.includes('bug') || lower.includes('error') || lower.includes('issue')) {
-                hook = `Tracking down and resolving this specific error on your project is something I handle regularly without wasting time.`;
-                step1 = "1. Reproduce and isolate the exact failure point in your codebase or environment.";
-                step2 = "2. Apply a clean and robust patch to permanently resolve the error.";
-                step3 = "3. Run comprehensive tests to ensure everything operates smoothly.";
-                question = "Can you share any specific error logs or steps to trigger the issue?";
-            } else if (lower.includes('wordpress') || lower.includes('elementor') || lower.includes('plugin') || lower.includes('site')) {
-                hook = `Building and optimizing your WordPress and Elementor requirements is right in my wheelhouse, ensuring clean structure and fast performance.`;
-                step1 = "1. Review your site structure and map out the exact layout or functional updates needed.";
-                step2 = "2. Build and configure the pages or features with clean styling and mobile responsiveness.";
-                step3 = "3. Test all interactions and finalize the setup for launch.";
-                question = "Do you have any specific design references or plugin requirements in mind?";
+            if (!resp.ok) {
+                throw new Error('API request failed');
             }
 
-            return `${hook}\n\nHere is how I will approach this for you:\n${step1}\n${step2}\n${step3}\n\n${question}`;
+            const data = await resp.json();
+            return data.candidates[0].content.parts[0].text.trim();
         }
 
         copyBtn.addEventListener('click', () => {
