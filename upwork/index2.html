@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upwork WinEngine - Dynamic 3-Rule Pitch Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .skeleton-loader {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.05) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+    <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-paper-plane text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-white tracking-wide">Upwork WinEngine</h1>
+                    <p class="text-xs text-slate-400">Dynamic 3-Rule Pitch Generator</p>
+                </div>
+            </div>
+            <button id="openSettingsBtn" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition">
+                <i class="fa-solid fa-gear text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col h-full">
+                <div class="flex items-center justify-between mb-4">
+                    <label for="jobDescription" class="text-sm font-semibold text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-file-lines"></i> Client Job Description Snippet *
+                    </label>
+                    <button id="clearBtn" class="text-xs text-slate-400 hover:text-slate-200 transition">Clear</button>
+                </div>
+                <p class="text-xs text-slate-400 mb-3">Paste the exact job posting snippet to dynamically extract problem context and technical specs.</p>
+                
+                <textarea id="jobDescription" class="w-full flex-1 min-h-[360px] bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-emerald-500/50 transition resize-none placeholder-slate-600 mb-6" placeholder="Paste the job description here... e.g. Seeking malware removal from five WordPress sites hosted by HostGator..."></textarea>
+                
+                <button id="generateBtn" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-emerald-500/10 transition flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i id="btnSpinner" class="fa-solid fa-spinner fa-spin hidden"></i>
+                    <i id="btnIcon" class="fa-solid fa-bolt"></i>
+                    <span id="btnText">Generate Winning Proposal</span>
+                </button>
+            </div>
+
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col h-full relative overflow-hidden">
+                <div id="rightPanelOverlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-xs z-20 hidden flex-col items-center justify-center gap-3">
+                    <div class="w-12 h-12 rounded-full border-2 border-emerald-500/20 border-t-emerald-400 animate-spin flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-scissors text-sm"></i>
+                    </div>
+                    <span class="text-sm font-medium text-emerald-400 animate-pulse">Generating proposal...</span>
+                </div>
+
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-sm font-semibold text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-trophy"></i> Tailored Proposal
+                        </h2>
+                        <span id="generatingBadge" class="hidden text-[10px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2 py-0.5 rounded-full items-center gap-1">
+                            <i class="fa-solid fa-scissors fa-spin text-[10px]"></i> Generating...
+                        </span>
+                    </div>
+                    <button id="copyBtn" class="bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition">
+                        <i class="fa-solid fa-copy"></i> Copy to Clipboard
+                    </button>
+                </div>
+                
+                <p class="text-xs text-slate-400 mb-4">Zero AI fluff, purely diagnostic and conversion-focused</p>
+
+                <div class="mb-6 bg-slate-950/60 border border-slate-800 rounded-xl p-4 relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[11px] font-bold tracking-wider text-emerald-400 uppercase flex items-center gap-1.5">
+                            <i class="fa-solid fa-eye"></i> Client Dashboard Feed Snippet (First 2 Lines)
+                        </span>
+                        <span class="text-[10px] text-slate-500">Hook Preview</span>
+                    </div>
+                    <div id="previewCard" class="text-xs italic text-slate-300 leading-relaxed font-mono bg-slate-900/50 p-3 rounded-lg border border-slate-800/80 min-h-[52px]">
+                        Proposal feed preview will appear here...
+                    </div>
+                </div>
+
+                <div class="flex-1 flex flex-col">
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="proposalText" class="text-xs font-medium text-slate-400">Full Proposal Text (Editable Live)</label>
+                        <span id="wordCount" class="text-xs text-slate-500">0 words</span>
+                    </div>
+                    <textarea id="proposalText" class="w-full flex-1 min-h-[260px] bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-amber-500/50 transition resize-none font-sans leading-relaxed" placeholder="Generated proposal will appear here..."></textarea>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-key text-emerald-400"></i> API Configuration
+                </h3>
+                <button id="closeSettingsBtn" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Add your free Google Gemini API Key to enable AI model context analysis.</p>
+            <div class="mb-6">
+                <label for="apiKeyInput" class="text-xs font-medium text-slate-300 block mb-2">Gemini API Key</label>
+                <input type="password" id="apiKeyInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:border-emerald-500/50 transition" placeholder="AIzaSy...">
+            </div>
+            <div class="flex justify-end gap-3">
+                <button id="saveApiKeyBtn" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition">Save Key</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const jobDescription = document.getElementById('jobDescription');
+        const proposalText = document.getElementById('proposalText');
+        const previewCard = document.getElementById('previewCard');
+        const generateBtn = document.getElementById('generateBtn');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const btnIcon = document.getElementById('btnIcon');
+        const btnText = document.getElementById('btnText');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const wordCount = document.getElementById('wordCount');
+        const rightPanelOverlay = document.getElementById('rightPanelOverlay');
+        const generatingBadge = document.getElementById('generatingBadge');
+
+        const settingsModal = document.getElementById('settingsModal');
+        const openSettingsBtn = document.getElementById('openSettingsBtn');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+
+        let apiKey = localStorage.getItem('gemini_api_key') || '';
+        if (apiKey) apiKeyInput.value = apiKey;
+
+        openSettingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
+        closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+        saveApiKeyBtn.addEventListener('click', () => {
+            apiKey = apiKeyInput.value.trim();
+            localStorage.setItem('gemini_api_key', apiKey);
+            settingsModal.classList.add('hidden');
+        });
+
+        clearBtn.addEventListener('click', () => {
+            jobDescription.value = '';
+            proposalText.value = '';
+            previewCard.innerText = 'Proposal feed preview will appear here...';
+            updateWordCount();
+        });
+
+        proposalText.addEventListener('input', () => {
+            updatePreviewSnippet();
+            updateWordCount();
+        });
+
+        function updateWordCount() {
+            const text = proposalText.value.trim();
+            const count = text ? text.split(/\s+/).length : 0;
+            wordCount.innerText = `${count} words`;
+        }
+
+        function updatePreviewSnippet() {
+            const lines = proposalText.value.trim().split('\n').filter(line => line.trim() !== '');
+            if (lines.length > 0) {
+                const firstTwo = lines.slice(0, 2).join(' ');
+                previewCard.innerText = firstTwo;
+            } else {
+                previewCard.innerText = 'Proposal feed preview will appear here...';
+            }
+        }
+
+        function playCompletionSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.15);
+            } catch (e) {}
+        }
+
+        generateBtn.addEventListener('click', async () => {
+            const input = jobDescription.value.trim();
+            if (!input) return;
+
+            setLoading(true);
+
+            let result = '';
+            if (apiKey) {
+                try {
+                    result = await generateWithGemini(input);
+                } catch (err) {
+                    result = fallbackGenerator(input);
+                }
+            } else {
+                await new Promise(r => setTimeout(r, 600));
+                result = fallbackGenerator(input);
+            }
+
+            proposalText.value = result;
+            updatePreviewSnippet();
+            updateWordCount();
+            setLoading(false);
+            playCompletionSound();
+        });
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                generateBtn.disabled = true;
+                btnSpinner.classList.remove('hidden');
+                btnIcon.classList.add('hidden');
+                btnText.innerText = 'Analyzing Job Post...';
+                rightPanelOverlay.classList.remove('hidden');
+                rightPanelOverlay.classList.add('flex');
+                generatingBadge.classList.remove('hidden');
+                generatingBadge.classList.add('flex');
+            } else {
+                generateBtn.disabled = false;
+                btnSpinner.classList.add('hidden');
+                btnIcon.classList.remove('hidden');
+                btnText.innerText = 'Generate Winning Proposal';
+                rightPanelOverlay.classList.add('hidden');
+                rightPanelOverlay.classList.remove('flex');
+                generatingBadge.classList.add('hidden');
+                generatingBadge.classList.remove('flex');
+            }
+        }
+
+        async function generateWithGemini(promptText) {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            const systemInstruction = `You are a top-rated freelancer proposal generator. Follow this 3-Rule Upwork Proposal Formula strictly:
+Rule 1: Mirror the client's exact problem in sentence #1 (no generic intros, no greetings, no "Dear Hiring Manager").
+Rule 2: Provide a 3-step concrete action roadmap tailored specifically to their timeline and technology stack.
+Rule 3: Ask 1 thoughtful closing diagnostic question to spark an immediate chat conversation.
+
+Strict Guardrails:
+- Absolute zero fluff or generic boilerplate.
+- Do NOT use words like: "delve", "transform", "leverage", "thrilled", "pleasure", "expert", "crucial".
+- Output only the plain text proposal, ready to send.`;
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: `${systemInstruction}\n\nClient Job Description:\n${promptText}` }]
+                }]
+            };
+
+            const resp = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await resp.json();
+            return data.candidates[0].content.parts[0].text.trim();
+        }
+
+        function fallbackGenerator(text) {
+            const lower = text.toLowerCase();
+            let hook = "Your project requirements point directly to a clear technical execution bottleneck that needs immediate resolution.";
+            let step1 = "1. Isolate the core root issue within your environment without disrupting active state.";
+            let step2 = "2. Deploy the targeted fix using clean, performant, and maintainable implementation patterns.";
+            let step3 = "3. Conduct systematic verification testing and provide complete handoff notes.";
+            let question = "What is your target timeline for having this fix deployed and verified?";
+
+            if (lower.includes('malware') || lower.includes('hack') || lower.includes('clean') || lower.includes('hostgator')) {
+                hook = "Persistent malware infection across your primary domain and subdomains usually indicates a hidden backdoor or automated cron task regenerating files.";
+                step1 = "1. Trace and terminate active malicious processes, server cron jobs, and persistent backdoor scripts.";
+                step2 = "2. Clean infected database tables and purge unauthorized directories across all subdomains.";
+                step3 = "3. Implement strict file permission rules, security headers, and automated firewall rules to prevent self-replication.";
+                question = "Do you have SSH access or cPanel file manager access available to inspect server logs right now?";
+            } else if (lower.includes('speed') || lower.includes('slow') || lower.includes('optimization') || lower.includes('wp rocket')) {
+                hook = "Resolving load speed bottlenecks requires addressing core render-blocking resources and database query overhead.";
+                step1 = "1. Conduct a deep performance waterfall audit to identify unoptimized assets and query bottlenecks.";
+                step2 = "2. Implement object caching, critical CSS generation, and dynamic asset deferral.";
+                step3 = "3. Optimize media compression and clean up orphaned database records to sustain high PSI scores.";
+                question = "Are you currently serving traffic through Cloudflare or a similar CDN?";
+            }
+
+            return `${hook}\n\nHere is how I will resolve this for you:\n${step1}\n${step2}\n${step3}\n\n${question}`;
+        }
+
+        copyBtn.addEventListener('click', () => {
+            if (!proposalText.value) return;
+            navigator.clipboard.writeText(proposalText.value);
+            const original = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+            setTimeout(() => copyBtn.innerHTML = original, 2000);
+        });
+    </script>
+</body>
+</html>
