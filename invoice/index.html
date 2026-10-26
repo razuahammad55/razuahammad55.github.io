@@ -253,7 +253,7 @@
         }
 
         .invoice-title {
-            font-size: 23px;
+            font-size: 30px;
             font-weight: 400;
             color: #000000;
             margin-bottom: 6px;
@@ -421,7 +421,7 @@
             padding-top: 20px;
         }
 
-        /* Print Override Rules to strip header/footer titles, URLs & dates */
+        /* Print Override Rules */
         @page {
             size: A4 portrait;
             margin: 0 !important;
@@ -480,11 +480,11 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Issued Date</label>
-                            <input type="date" id="inputIssued" value="2026-10-21">
+                            <input type="date" id="inputIssued">
                         </div>
                         <div class="form-group">
                             <label>Due Date</label>
-                            <input type="date" id="inputDue" value="2026-10-28">
+                            <input type="date" id="inputDue">
                         </div>
                     </div>
                     <div class="form-group">
@@ -507,15 +507,13 @@ razuahammad55@gmail.com
                     </div>
                     <div class="form-group">
                         <label>To (Recipient)</label>
-                        <textarea id="inputTo">
-                            Jennifer Mitchell
+                        <textarea id="inputTo">Stavrianou Pelagia Eleftheria
 Marketing and Consultancy Services
-1250 Market Street, San Francisco, CA 94103, USA
-Tax Number: 12-3456789 (Fictional EIN)
-Tax Office: IRS
-jennifer.mitchell@example.com
-Tel: +1 202-555-0147
-                        </textarea>
+Chatzikonstanti 22, Psichiko, 15452
+Tax Number: EL125141664
+Tax Office: KEFODE ATTIKIS
+p-stavrianou@hotmail.com
+Tel: +30 6979186608</textarea>
                     </div>
                 </div>
 
@@ -557,8 +555,8 @@ Tel: +1 202-555-0147
                         <div class="invoice-title-block">
                             <div class="invoice-title">Invoice: <span id="viewNumber">0006</span></div>
                             <div class="invoice-meta">
-                                <div>Issued on: <span id="viewIssued">2026-10-21</span></div>
-                                <div>Due by: <span id="viewDue">2026-10-28</span></div>
+                                <div>Issued on: <span id="viewIssued"></span></div>
+                                <div>Due by: <span id="viewDue"></span></div>
                             </div>
                         </div>
                     </div>
@@ -627,15 +625,60 @@ Tel: +1 202-555-0147
     </div>
 
     <script>
+        // Helper to format date as DD/MM/YYYY
+        function formatDate(dateObj) {
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const year = dateObj.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Helper to format date for input value (YYYY-MM-DD)
+        function formatInputValue(dateObj) {
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const year = dateObj.getFullYear();
+            return `${year}-${month}-${day}`;
+        }
+
+        // Initialize Dates (Current Date & 7 days later)
+        const today = new Date();
+        const nextWeek = new Date();
+        nextWeek.setDate(today.getDate() + 7);
+
+        const inputIssued = document.getElementById('inputIssued');
+        const inputDue = document.getElementById('inputDue');
+        const viewIssued = document.getElementById('viewIssued');
+        const viewDue = document.getElementById('viewDue');
+
+        inputIssued.value = formatInputValue(today);
+        inputDue.value = formatInputValue(nextWeek);
+
+        viewIssued.textContent = formatDate(today);
+        viewDue.textContent = formatDate(nextWeek);
+
+        // Update view dates when inputs change manually
+        inputIssued.addEventListener('input', e => {
+            if (e.target.value) {
+                const parts = e.target.value.split('-');
+                viewIssued.textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+        });
+
+        inputDue.addEventListener('input', e => {
+            if (e.target.value) {
+                const parts = e.target.value.split('-');
+                viewDue.textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+        });
+
         // Default Line Items
         let items = [
-            { id: 1, title: 'Web Development', quantity: 1, price: 500.00 }
+            { id: 1, title: 'English to Italian Translation', quantity: 1, price: 200.00 }
         ];
 
         // Input References
         const inputNumber = document.getElementById('inputNumber');
-        const inputIssued = document.getElementById('inputIssued');
-        const inputDue = document.getElementById('inputDue');
         const inputCurrency = document.getElementById('inputCurrency');
         const inputFrom = document.getElementById('inputFrom');
         const inputTo = document.getElementById('inputTo');
@@ -645,8 +688,6 @@ Tel: +1 202-555-0147
 
         // View References
         const viewNumber = document.getElementById('viewNumber');
-        const viewIssued = document.getElementById('viewIssued');
-        const viewDue = document.getElementById('viewDue');
         const viewFrom = document.getElementById('viewFrom');
         const viewTo = document.getElementById('viewTo');
         const viewTableBody = document.getElementById('viewTableBody');
@@ -656,8 +697,6 @@ Tel: +1 202-555-0147
 
         // Bind Live Syncing
         inputNumber.addEventListener('input', e => viewNumber.textContent = e.target.value);
-        inputIssued.addEventListener('input', e => viewIssued.textContent = e.target.value);
-        inputDue.addEventListener('input', e => viewDue.textContent = e.target.value);
         inputFrom.addEventListener('input', e => viewFrom.textContent = e.target.value);
         inputTo.addEventListener('input', e => viewTo.textContent = e.target.value);
         
