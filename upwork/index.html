@@ -81,24 +81,12 @@
                 
                 <p class="text-xs text-slate-400 mb-4">Strictly customized to client name, unique specs, and zero fluff</p>
 
-                <div class="mb-6 bg-slate-950/60 border border-slate-800 rounded-xl p-4 relative overflow-hidden">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[11px] font-bold tracking-wider text-emerald-400 uppercase flex items-center gap-1.5">
-                            <i class="fa-solid fa-eye"></i> Client Dashboard Feed Snippet (First 2 Lines)
-                        </span>
-                        <span class="text-[10px] text-slate-500">Hook Preview</span>
-                    </div>
-                    <div id="previewCard" class="text-xs italic text-slate-300 leading-relaxed font-mono bg-slate-900/50 p-3 rounded-lg border border-slate-800/80 min-h-[52px]">
-                        Proposal feed preview will appear here...
-                    </div>
-                </div>
-
                 <div class="flex-1 flex flex-col">
                     <div class="flex items-center justify-between mb-2">
                         <label for="proposalText" class="text-xs font-medium text-slate-400">Full Proposal Text (Editable Live)</label>
                         <span id="wordCount" class="text-xs text-slate-500">0 words</span>
                     </div>
-                    <textarea id="proposalText" class="w-full flex-1 min-h-[260px] bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-amber-500/50 transition resize-none font-sans leading-relaxed" placeholder="Generated proposal will appear here..."></textarea>
+                    <textarea id="proposalText" class="w-full flex-1 min-h-[380px] bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-amber-500/50 transition resize-none font-sans leading-relaxed" placeholder="Generated proposal will appear here..."></textarea>
                 </div>
             </div>
         </div>
@@ -128,7 +116,6 @@
     <script>
         const jobDescription = document.getElementById('jobDescription');
         const proposalText = document.getElementById('proposalText');
-        const previewCard = document.getElementById('previewCard');
         const generateBtn = document.getElementById('generateBtn');
         const btnSpinner = document.getElementById('btnSpinner');
         const btnIcon = document.getElementById('btnIcon');
@@ -152,7 +139,6 @@
             updateApiKeyStatus(true);
         } else {
             updateApiKeyStatus(false);
-            // Open settings on first load if no key exists
             setTimeout(() => settingsModal.classList.remove('hidden'), 400);
         }
 
@@ -189,29 +175,15 @@
         clearBtn.addEventListener('click', () => {
             jobDescription.value = '';
             proposalText.value = '';
-            previewCard.innerText = 'Proposal feed preview will appear here...';
             updateWordCount();
         });
 
-        proposalText.addEventListener('input', () => {
-            updatePreviewSnippet();
-            updateWordCount();
-        });
+        proposalText.addEventListener('input', updateWordCount);
 
         function updateWordCount() {
             const text = proposalText.value.trim();
             const count = text ? text.split(/\s+/).length : 0;
             wordCount.innerText = `${count} words`;
-        }
-
-        function updatePreviewSnippet() {
-            const lines = proposalText.value.trim().split('\n').filter(line => line.trim() !== '');
-            if (lines.length > 0) {
-                const firstTwo = lines.slice(0, 2).join(' ');
-                previewCard.innerText = firstTwo;
-            } else {
-                previewCard.innerText = 'Proposal feed preview will appear here...';
-            }
         }
 
         function playStrongSuccessSound() {
@@ -249,7 +221,6 @@
             try {
                 const result = await generateWithGemini(input);
                 proposalText.value = result;
-                updatePreviewSnippet();
                 updateWordCount();
                 setLoading(false);
                 playStrongSuccessSound();
