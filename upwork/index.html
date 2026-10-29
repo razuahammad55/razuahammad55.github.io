@@ -7,9 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .bg-slate-950\/60 {
-            display: none;
-        }
         .skeleton-loader {
             background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.05) 75%);
             background-size: 200% 100%;
@@ -33,15 +30,15 @@
                     <p class="text-xs text-slate-400">Dynamic Custom Pitch Generator</p>
                 </div>
             </div>
-            <button id="openSettingsBtn" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition flex items-center gap-2">
-                <i class="fa-solid fa-gear text-lg"></i>
-                <span id="apiKeyStatusIndicator" class="w-2 h-2 rounded-full bg-rose-500" title="API Key Required"></span>
+            <button id="lockBtn" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition flex items-center gap-2" title="Lock Session">
+                <i class="fa-solid fa-lock text-lg text-emerald-400" id="lockIcon"></i>
             </button>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Left Input Panel -->
             <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col h-full">
                 <div class="flex items-center justify-between mb-4">
                     <label for="jobDescription" class="text-sm font-semibold text-emerald-400 flex items-center gap-2">
@@ -60,6 +57,7 @@
                 </button>
             </div>
 
+            <!-- Right Output Panel -->
             <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col h-full relative overflow-hidden">
                 <div id="rightPanelOverlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-xs z-20 hidden flex-col items-center justify-center gap-3">
                     <div class="w-12 h-12 rounded-full border-2 border-emerald-500/20 border-t-emerald-400 animate-spin flex items-center justify-center text-emerald-400">
@@ -82,56 +80,83 @@
                     </button>
                 </div>
                 
-                <p class="text-xs text-slate-400 mb-4">Strictly customized to client name, unique specs, and zero fluff</p>
-
-                <div class="mb-6 bg-slate-950/60 border border-slate-800 rounded-xl p-4 relative overflow-hidden">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[11px] font-bold tracking-wider text-emerald-400 uppercase flex items-center gap-1.5">
-                            <i class="fa-solid fa-eye"></i> Client Dashboard Feed Snippet (First 2 Lines)
-                        </span>
-                        <span class="text-[10px] text-slate-500">Hook Preview</span>
-                    </div>
-                    <div id="previewCard" class="text-xs italic text-slate-300 leading-relaxed font-mono bg-slate-900/50 p-3 rounded-lg border border-slate-800/80 min-h-[52px]">
-                        Proposal feed preview will appear here...
-                    </div>
-                </div>
+                <p class="text-xs text-slate-400 mb-4">Strictly customized to client details with zero fluff</p>
 
                 <div class="flex-1 flex flex-col">
                     <div class="flex items-center justify-between mb-2">
                         <label for="proposalText" class="text-xs font-medium text-slate-400">Full Proposal Text (Editable Live)</label>
                         <span id="wordCount" class="text-xs text-slate-500">0 words</span>
                     </div>
-                    <textarea id="proposalText" class="w-full flex-1 min-h-[260px] bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-amber-500/50 transition resize-none font-sans leading-relaxed" placeholder="Generated proposal will appear here..."></textarea>
+                    <textarea id="proposalText" class="w-full flex-1 min-h-[380px] bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-amber-500/50 transition resize-none font-sans leading-relaxed" placeholder="Generated proposal will appear here..."></textarea>
                 </div>
             </div>
         </div>
     </main>
 
-    <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <!-- Passkey Access Modal -->
+    <div id="passkeyModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-key text-emerald-400"></i> API Configuration Required
+                    <i class="fa-solid fa-lock text-emerald-400"></i> Enter Access Passkey
                 </h3>
-                <button id="closeSettingsBtn" class="text-slate-400 hover:text-white transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
             </div>
-            <p class="text-xs text-slate-400 mb-4">Please enter your Google Gemini API Key. The application requires an active API key to generate custom proposals.</p>
+            <p class="text-xs text-slate-400 mb-4">Please enter your passkey to unlock the Upwork WinEngine script.</p>
+            
             <div class="mb-6">
-                <label for="apiKeyInput" class="text-xs font-medium text-slate-300 block mb-2">Gemini API Key</label>
-                <input type="password" id="apiKeyInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:border-emerald-500/50 transition" placeholder="AIzaSy...">
+                <input type="password" id="passkeyInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 text-sm focus:outline-none focus:border-emerald-500/50 transition" placeholder="Enter passkey...">
+                <p id="passkeyError" class="text-xs text-rose-500 mt-2 hidden">Incorrect passkey. Please try again.</p>
             </div>
-            <div class="flex justify-end gap-3">
-                <button id="saveApiKeyBtn" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition">Save Key</button>
+
+            <div class="flex justify-end">
+                <button id="unlockBtn" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-xl transition">Unlock Generator</button>
             </div>
         </div>
     </div>
 
     <script>
+        // ================= CONFIGURATION =================
+        const CONFIG = {
+            PASSKEY: "Razu0000", // Your access passkey
+            GEMINI_API_KEY: "AQ.Ab8RN6LvskCWu3gTZxOwD6DPb6wprMQY_9VyHDX-S6R_MtlCOw" // Your Google Gemini API Key
+        };
+        // =================================================
+
+        const passkeyModal = document.getElementById('passkeyModal');
+        const passkeyInput = document.getElementById('passkeyInput');
+        const unlockBtn = document.getElementById('unlockBtn');
+        const passkeyError = document.getElementById('passkeyError');
+        const lockBtn = document.getElementById('lockBtn');
+
+        // Check permanent browser storage so you only type it once
+        if (localStorage.getItem('winengine_unlocked') === 'true') {
+            passkeyModal.classList.add('hidden');
+        }
+
+        unlockBtn.addEventListener('click', verifyPasskey);
+        passkeyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') verifyPasskey();
+        });
+
+        function verifyPasskey() {
+            if (passkeyInput.value === CONFIG.PASSKEY) {
+                localStorage.setItem('winengine_unlocked', 'true');
+                passkeyModal.classList.add('hidden');
+                passkeyError.classList.add('hidden');
+            } else {
+                passkeyError.classList.remove('hidden');
+                passkeyInput.value = '';
+            }
+        }
+
+        lockBtn.addEventListener('click', () => {
+            localStorage.removeItem('winengine_unlocked');
+            passkeyInput.value = '';
+            passkeyModal.classList.remove('hidden');
+        });
+
         const jobDescription = document.getElementById('jobDescription');
         const proposalText = document.getElementById('proposalText');
-        const previewCard = document.getElementById('previewCard');
         const generateBtn = document.getElementById('generateBtn');
         const btnSpinner = document.getElementById('btnSpinner');
         const btnIcon = document.getElementById('btnIcon');
@@ -141,80 +166,19 @@
         const wordCount = document.getElementById('wordCount');
         const rightPanelOverlay = document.getElementById('rightPanelOverlay');
         const generatingBadge = document.getElementById('generatingBadge');
-        const apiKeyStatusIndicator = document.getElementById('apiKeyStatusIndicator');
-
-        const settingsModal = document.getElementById('settingsModal');
-        const openSettingsBtn = document.getElementById('openSettingsBtn');
-        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-        const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
-        const apiKeyInput = document.getElementById('apiKeyInput');
-
-        let apiKey = localStorage.getItem('gemini_api_key') || '';
-        if (apiKey) {
-            apiKeyInput.value = apiKey;
-            updateApiKeyStatus(true);
-        } else {
-            updateApiKeyStatus(false);
-            // Open settings on first load if no key exists
-            setTimeout(() => settingsModal.classList.remove('hidden'), 400);
-        }
-
-        function updateApiKeyStatus(hasKey) {
-            if (hasKey) {
-                apiKeyStatusIndicator.className = 'w-2 h-2 rounded-full bg-emerald-500';
-                apiKeyStatusIndicator.title = 'API Key Active';
-            } else {
-                apiKeyStatusIndicator.className = 'w-2 h-2 rounded-full bg-rose-500';
-                apiKeyStatusIndicator.title = 'API Key Required';
-            }
-        }
-
-        openSettingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
-        closeSettingsBtn.addEventListener('click', () => {
-            if (!apiKey) {
-                alert('An API key is required to use this application.');
-                return;
-            }
-            settingsModal.classList.add('hidden');
-        });
-
-        saveApiKeyBtn.addEventListener('click', () => {
-            apiKey = apiKeyInput.value.trim();
-            if (!apiKey) {
-                alert('Please enter a valid API key.');
-                return;
-            }
-            localStorage.setItem('gemini_api_key', apiKey);
-            updateApiKeyStatus(true);
-            settingsModal.classList.add('hidden');
-        });
 
         clearBtn.addEventListener('click', () => {
             jobDescription.value = '';
             proposalText.value = '';
-            previewCard.innerText = 'Proposal feed preview will appear here...';
             updateWordCount();
         });
 
-        proposalText.addEventListener('input', () => {
-            updatePreviewSnippet();
-            updateWordCount();
-        });
+        proposalText.addEventListener('input', updateWordCount);
 
         function updateWordCount() {
             const text = proposalText.value.trim();
             const count = text ? text.split(/\s+/).length : 0;
             wordCount.innerText = `${count} words`;
-        }
-
-        function updatePreviewSnippet() {
-            const lines = proposalText.value.trim().split('\n').filter(line => line.trim() !== '');
-            if (lines.length > 0) {
-                const firstTwo = lines.slice(0, 2).join(' ');
-                previewCard.innerText = firstTwo;
-            } else {
-                previewCard.innerText = 'Proposal feed preview will appear here...';
-            }
         }
 
         function playStrongSuccessSound() {
@@ -241,24 +205,17 @@
             const input = jobDescription.value.trim();
             if (!input) return;
 
-            if (!apiKey) {
-                settingsModal.classList.remove('hidden');
-                alert('Please enter your Gemini API key in settings first.');
-                return;
-            }
-
             setLoading(true);
 
             try {
                 const result = await generateWithGemini(input);
                 proposalText.value = result;
-                updatePreviewSnippet();
                 updateWordCount();
                 setLoading(false);
                 playStrongSuccessSound();
             } catch (err) {
                 setLoading(false);
-                alert('Error generating proposal. Please verify your API key and check console logs.');
+                alert('Error generating proposal. Please verify your API key.');
             }
         });
 
@@ -285,12 +242,12 @@
         }
 
         async function generateWithGemini(promptText) {
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${CONFIG.GEMINI_API_KEY}`;
             const systemInstruction = `You are an elite, highly observant Upwork freelancer proposal writer. 
 Carefully read every line of the provided job description. 
 - Look for the client's name (e.g. "Hi, I am John" or client name mentions) and use it naturally if available (e.g. "Hi [Name]," or addressing them directly).
 - Look for unique constraints, tech stacks, or special requirements mentioned in the post and explicitly address them word-for-word.
-- DO NOT use a rigid or generic 3-step list if the job requires something different. Adapt your proposal structure dynamically to match what this specific client needs (whether it's a technical audit, custom development, bug fixing, or ongoing tasks).
+- DO NOT use a rigid or generic 3-step list if the job requires something different. Adapt your proposal structure dynamically to match what this specific client needs.
 - Rule 1 (First 2 Lines Hook): Start immediately by mirroring their exact problem or objective in sentence #1 so they instantly know you read their post word-for-word. No generic fluff.
 - Rule 2 (Custom Action Plan): Provide a clear, practical, tailored execution approach using easy, natural words.
 - Rule 3 (Closing Diagnostic Question): End with 1 direct, smart question about their setup to spark an immediate chat reply.
